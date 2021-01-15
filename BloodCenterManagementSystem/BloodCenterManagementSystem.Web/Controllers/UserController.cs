@@ -49,7 +49,7 @@ namespace BloodCenterManagementSystem.Web.Controllers
         }
 
         [HttpPost,Route("RegisterAccount")]
-        public IActionResult Post(RegisterUserrData data)
+        public IActionResult Post(UserEmailAndPassword data)
         {
             var result = UserLogic.RegisterAccount(data);
 
