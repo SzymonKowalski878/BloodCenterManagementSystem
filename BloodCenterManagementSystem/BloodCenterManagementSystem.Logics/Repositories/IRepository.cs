@@ -9,5 +9,6 @@ namespace BloodCenterManagementSystem.Logics.Repositories
     {
         void Add(T model);
         void SaveChanges();
+        T GetById(int id);
     }
 }

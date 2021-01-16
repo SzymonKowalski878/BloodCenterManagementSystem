@@ -27,5 +27,10 @@ namespace BloodCenterManagementSystem.DataAccess
         {
             DataContext.SaveChanges();
         }
+
+        public virtual T GetById(int id)
+        {
+            return DataContext.Set<T>().FirstOrDefault(m => m.Id == id);
+        }
     }
 }
