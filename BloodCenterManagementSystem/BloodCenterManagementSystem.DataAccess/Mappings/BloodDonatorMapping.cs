@@ -27,6 +27,10 @@ namespace BloodCenterManagementSystem.DataAccess.Mappings
             builder
                 .HasIndex(m => m.Pesel)
                 .IsUnique();
+
+            builder
+                .HasIndex(m => m.BloodTypeId)
+                .IsUnique(false);
         }
     }
 }
