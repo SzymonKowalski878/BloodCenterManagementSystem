@@ -19,6 +19,9 @@ namespace BloodCenterManagementSystem.DataAccess
         public DbSet<UserModel> Users { get; set; }
         public DbSet<BloodDonatorModel> BloodDonators { get; set; }
         public DbSet<BloodTypeModel> BloodTypes { get; set; }
+        public DbSet<DonationModel> Donations { get; set; }
+        public DbSet<BloodStorageModel> BloodStorage { get; set; }
+        public DbSet<ResultOfExaminationModel> ResultsOfExamination { get; set; }
 
         protected override void OnModelCreating (ModelBuilder builder)
         {
