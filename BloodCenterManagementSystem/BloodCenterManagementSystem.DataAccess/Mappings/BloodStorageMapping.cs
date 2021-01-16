@@ -18,7 +18,7 @@ namespace BloodCenterManagementSystem.DataAccess.Mappings
                 .HasOne(m => m.BloodType)
                 .WithMany()
                 .HasForeignKey(m => m.BloodTypeId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

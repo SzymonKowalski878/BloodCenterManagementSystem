@@ -17,12 +17,14 @@ namespace BloodCenterManagementSystem.DataAccess.Mappings
             builder
                 .HasOne(m => m.User)
                 .WithOne(m => m.BloodDonator)
-                .HasForeignKey<UserModel>(m => m.BloodDonatorId);
+                .HasForeignKey<UserModel>(m => m.BloodDonatorId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder
                 .HasOne(m => m.BloodType)
                 .WithMany()
-                .HasForeignKey(m => m.BloodTypeId);
+                .HasForeignKey(m => m.BloodTypeId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder
                 .HasIndex(m => m.Pesel)

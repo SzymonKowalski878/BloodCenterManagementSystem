@@ -17,19 +17,20 @@ namespace BloodCenterManagementSystem.DataAccess.Mappings
             builder
                 .HasOne(m => m.BloodDonator)
                 .WithMany()
-                .HasForeignKey(m => m.BloodDonatorId);
+                .HasForeignKey(m => m.BloodDonatorId)
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder
                 .HasOne(m => m.ResultOfExamination)
                 .WithOne(m => m.Donation)
                 .HasForeignKey<ResultOfExaminationModel>(m => m.DonationId)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder
                 .HasOne(m => m.BloodStorage)
                 .WithOne(m => m.Donation)
                 .HasForeignKey<BloodStorageModel>(m => m.DonationId)
-                .OnDelete(DeleteBehavior.ClientSetNull);
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }
