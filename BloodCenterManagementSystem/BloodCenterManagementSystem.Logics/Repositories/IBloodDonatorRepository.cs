@@ -7,5 +7,6 @@ namespace BloodCenterManagementSystem.Logics.Repositories
 {
     public interface IBloodDonatorRepository:IRepository<BloodDonatorModel>
     {
+        BloodDonatorModel ReturnDonatorInfo(int id);
     }
 }

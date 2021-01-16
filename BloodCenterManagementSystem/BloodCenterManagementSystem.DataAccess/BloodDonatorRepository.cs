@@ -1,7 +1,9 @@
 ﻿using BloodCenterManagementSystem.Logics.Repositories;
 using BloodCenterManagementSystem.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace BloodCenterManagementSystem.DataAccess
@@ -12,6 +14,11 @@ namespace BloodCenterManagementSystem.DataAccess
             :base(dataContext)
         {
 
+        }
+
+        public BloodDonatorModel ReturnDonatorInfo(int id)
+        {
+            return DataContext.BloodDonators.Include(m => m.User).FirstOrDefault(m => m.User.Id == id);
         }
     }
 }
