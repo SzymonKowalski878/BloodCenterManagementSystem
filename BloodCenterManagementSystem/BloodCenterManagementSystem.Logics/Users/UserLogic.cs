@@ -30,7 +30,7 @@ namespace BloodCenterManagementSystem.Logics.Users
             _userRepository = userRepository;
         }
 
-        public Result<UserModel> RegisterAccount(RegisterUserrData data)
+        public Result<UserModel> RegisterAccount(UserEmailAndPassword data)
         {
             if (data == null)
             {
@@ -75,6 +75,38 @@ namespace BloodCenterManagementSystem.Logics.Users
             UserRepositroy.SaveChanges();
 
             return Result.Ok(user);
+        }
+
+        public Result<UserToken> Login(UserIdAndPassword data)
+        {
+            if(data == null)
+            {
+                return Result.Error<UserToken>("Data was null");
+            }
+
+            var authResult = AuthService.VerifyPassword(data.Id, data.Password);
+
+            if (!authResult)
+            {
+                return Result.Error<UserToken>("Error during authentication");
+            }
+
+            var user = UserRepositroy.GetById(data.Id);
+
+            if (user == null)
+            {
+                return Result.Error<UserToken>("Error while trying to get user from database");
+            }
+
+
+            var tokenData = AuthService.GenerateToken(user.Id, user.Role);
+
+            if (tokenData == null)
+            {
+                return Result.Error<UserToken>("Error during token generation");
+            }
+
+            return Result.Ok(tokenData);
         }
 
     }
