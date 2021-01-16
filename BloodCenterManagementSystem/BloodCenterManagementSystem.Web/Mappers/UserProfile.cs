@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BloodCenterManagementSystem.Models;
 using BloodCenterManagementSystem.Web.DTO;
+using BloodCenterManagementSystem.Web.DTO.User;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,7 @@ namespace BloodCenterManagementSystem.Web.Mappers
         public UserProfile()
         {
             CreateMap<AddUserDTO, UserModel>();
+            CreateMap<UserModel, ReturnUserInformationDTO>();
         }
     }
 }
