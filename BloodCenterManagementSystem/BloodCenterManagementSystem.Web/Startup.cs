@@ -32,6 +32,12 @@ namespace BloodCenterManagementSystem.Web
 
             services.AddAutoMapper(typeof(Startup));
 
+            services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
+            {
+                builder.AllowAnyOrigin()
+                       .AllowAnyMethod()
+                       .AllowAnyHeader();
+            }));
         }
 
         public void ConfigureContainer(ContainerBuilder builder)
@@ -46,6 +52,7 @@ namespace BloodCenterManagementSystem.Web
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseCors("MyPolicy");
             app.UseRouting();
 
             app.UseEndpoints(endpoints =>
