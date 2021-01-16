@@ -49,7 +49,7 @@ namespace BloodCenterManagementSystem.Web.Controllers
         }
 
         [HttpPost,Route("RegisterAccount")]
-        public IActionResult Post(RegisterUserrData data)
+        public IActionResult Post(UserEmailAndPassword data)
         {
             var result = UserLogic.RegisterAccount(data);
 
@@ -60,5 +60,19 @@ namespace BloodCenterManagementSystem.Web.Controllers
 
             return Ok(data);
         }
+
+        [HttpPost, Route("Login")]
+        public IActionResult Post(UserIdAndPassword data)
+        {
+            var result = UserLogic.Login(data);
+
+            if (!result.IsSuccessfull)
+            {
+                return BadRequest(result.ErrorMessages);
+            }
+
+            return Ok(result.Value);
+        }
+
     }
 }
