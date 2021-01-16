@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BloodCenterManagementSystem.DataAccess.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20210112224456_initialMigration")]
-    partial class initialMigration
+    [Migration("20210116140140_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
