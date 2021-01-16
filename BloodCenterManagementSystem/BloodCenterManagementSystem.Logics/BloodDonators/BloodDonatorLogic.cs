@@ -83,7 +83,9 @@ namespace BloodCenterManagementSystem.Logics.BloodDonators
                 return Result.Error<BloodDonatorModel>("Unable to find blood type with such name");
             }
 
-            data.BloodType = bloodType;
+            data.BloodType = null;
+            data.BloodTypeId = bloodType.Id;
+
             try
             {
                 BloodDonatorRepository.Add(data);
