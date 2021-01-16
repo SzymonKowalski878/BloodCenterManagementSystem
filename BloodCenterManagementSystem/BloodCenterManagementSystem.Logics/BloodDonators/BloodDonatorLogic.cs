@@ -97,5 +97,17 @@ namespace BloodCenterManagementSystem.Logics.BloodDonators
             }
             return Result.Ok(data);
         }
+
+        public Result<BloodDonatorModel> ReturnDonatorInformation(int id)
+        {
+            var bloodDonator = BloodDonatorRepository.ReturnDonatorInfo(id);
+
+            if(bloodDonator== null || bloodDonator.User == null)
+            {
+                return Result.Error<BloodDonatorModel>("Unable to find user with that id");
+            }
+
+            return Result.Ok(bloodDonator);
+        }
     }
 }

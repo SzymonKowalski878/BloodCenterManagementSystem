@@ -8,5 +8,6 @@ namespace BloodCenterManagementSystem.Logics.Interfaces
     public interface IBloodDonatorLogic:ILogic
     {
         Result<BloodDonatorModel> RegisterBloodDonator(BloodDonatorModel data);
+        Result<BloodDonatorModel> ReturnDonatorInformation(int id);
     }
 }
