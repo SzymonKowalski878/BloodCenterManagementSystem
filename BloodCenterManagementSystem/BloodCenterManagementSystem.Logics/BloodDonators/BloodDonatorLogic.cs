@@ -1,5 +1,6 @@
 ﻿using BloodCenterManagementSystem.Logics.Interfaces;
 using BloodCenterManagementSystem.Logics.Repositories;
+using BloodCenterManagementSystem.Logics.Users.DataHolders;
 using BloodCenterManagementSystem.Models;
 using EntityFramework.Exceptions.Common;
 using FluentValidation;
@@ -23,15 +24,20 @@ namespace BloodCenterManagementSystem.Logics.BloodDonators
         private readonly Lazy<IBloodTypeRepository> _bloodTypeRepository;
         protected IBloodTypeRepository BloodTypeRepository => _bloodTypeRepository.Value;
 
+        private readonly Lazy<IAuthService> _authService;
+        protected IAuthService AuthService => _authService.Value;
+
         public BloodDonatorLogic(Lazy<IBloodDonatorRepository> bloodDonatorRepository,
             Lazy<IValidator<BloodDonatorModel>> bloodDonatorValidator,
             Lazy<IBloodTypeRepository> bloodTypeRepository,
-            Lazy<IValidator<UserModel>> userValidator)
+            Lazy<IValidator<UserModel>> userValidator,
+            Lazy<IAuthService> authService)
         {
             _bloodDonatorRepository = bloodDonatorRepository;
             _bloodDonatorValidator = bloodDonatorValidator;
             _bloodTypeRepository = bloodTypeRepository;
             _userValidator = userValidator;
+            _authService = authService;
         }
 
         public Result<BloodDonatorModel> RegisterBloodDonator (BloodDonatorModel data)
@@ -41,7 +47,9 @@ namespace BloodCenterManagementSystem.Logics.BloodDonators
                 return Result.Error<BloodDonatorModel>("Data was null");
             }
 
-            var donatorValidation = BloodDonatorValidator.Validate(data);
+            var donatorValidation = BloodDonatorValidator.Validate(data,options=> {
+                options.IncludeAllRuleSets();
+            });
 
             if (!donatorValidation.IsValid)
             {
@@ -108,6 +116,106 @@ namespace BloodCenterManagementSystem.Logics.BloodDonators
             }
 
             return Result.Ok(bloodDonator);
+        }
+
+        public Result<BloodDonatorModel> UpdateUserData(UpdateUserData data)
+        {
+            if (string.IsNullOrEmpty(data.Email) && string.IsNullOrEmpty(data.Password) && string.IsNullOrEmpty(data.HomeAdress) && string.IsNullOrEmpty(data.PhoneNumber))
+            {
+                return Result.Error<BloodDonatorModel>("All update properites were empty");
+            }
+
+            var user = new UserModel
+            {
+                Email = data?.Email,
+                Password = data?.Password
+            };
+
+            var toUpdate = BloodDonatorRepository.ReturnDonatorInfo(data.Id);
+
+            if (toUpdate == null)
+            {
+                return Result.Error<BloodDonatorModel>("Unable to find user with id passed in the data");
+            }
+
+            if (!string.IsNullOrEmpty(data.Email))
+            {
+                var emailValidation = UserValidator.Validate(user, options =>
+                {
+                    options.IncludeRuleSets("ValidateEmail");
+                });
+
+                if (!emailValidation.IsValid)
+                {
+                    return Result.Error<BloodDonatorModel>(emailValidation.Errors);
+                }
+
+                toUpdate.User.Email = user.Email;
+                BloodDonatorRepository.SaveChanges();
+            }
+
+            if (!string.IsNullOrEmpty(data.Password))
+            {
+                var passwordValidation = UserValidator.Validate(user, options =>
+                {
+                    options.IncludeRuleSets("ValidatePassword");
+                });
+
+                if (!passwordValidation.IsValid)
+                {
+                    return Result.Error<BloodDonatorModel>(passwordValidation.Errors);
+                }
+
+                var hashedPassword = AuthService.HashPassword(user.Password);
+
+                if (String.IsNullOrEmpty(hashedPassword))
+                {
+                    return Result.Error<BloodDonatorModel>("Error during password hashing");
+                }
+
+                toUpdate.User.Password = hashedPassword;
+                BloodDonatorRepository.SaveChanges();
+            }
+
+            var donator = new BloodDonatorModel
+            {
+                HomeAdress = data?.HomeAdress,
+                PhoneNumber = data?.PhoneNumber
+            };
+
+            if (!string.IsNullOrEmpty(data.HomeAdress))
+            {
+                var homeAdressValidation = BloodDonatorValidator.Validate(donator, options =>
+                {
+                    options.IncludeRuleSets("ValidateHomeAdress");
+                });
+
+                if (!homeAdressValidation.IsValid)
+                {
+                    return Result.Error<BloodDonatorModel>(homeAdressValidation.Errors);
+                }
+
+                toUpdate.HomeAdress = donator.HomeAdress;
+                BloodDonatorRepository.SaveChanges();
+            }
+
+            if (!string.IsNullOrEmpty(data.PhoneNumber))
+            {
+                var phoneNumberValidation = BloodDonatorValidator.Validate(donator, options =>
+                {
+                    options.IncludeRuleSets("ValidatePhoneNumber");
+                });
+
+                if (!phoneNumberValidation.IsValid)
+                {
+                    return Result.Error<BloodDonatorModel>(phoneNumberValidation.Errors);
+                }
+
+                toUpdate.PhoneNumber = donator.PhoneNumber;
+                BloodDonatorRepository.SaveChanges();
+            }
+
+            return Result.Ok(toUpdate);
         }
     }
 }
