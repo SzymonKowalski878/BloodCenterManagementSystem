@@ -32,5 +32,10 @@ namespace BloodCenterManagementSystem.DataAccess
         {
             return DataContext.Set<T>().FirstOrDefault(m => m.Id == id);
         }
+
+        public virtual IEnumerable<T> GetAll()
+        {
+            return DataContext.Set<T>();
+        }
     }
 }
