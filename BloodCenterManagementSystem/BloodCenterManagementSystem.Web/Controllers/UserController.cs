@@ -74,5 +74,22 @@ namespace BloodCenterManagementSystem.Web.Controllers
             return Ok(result.Value);
         }
 
+        [HttpPost,Route("UpdateUserdata")]
+        public IActionResult Post(UpdateUserData data)
+        {
+            if(data == null)
+            {
+                return BadRequest("UpdateUserData was null");
+            }
+
+            var result = BloodDonatorLogic.UpdateUserData(data);
+
+            if (!result.IsSuccessfull)
+            {
+                return BadRequest(result.ErrorMessages);
+            }
+
+            return Ok(data);
+        }
     }
 }
