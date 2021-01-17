@@ -38,13 +38,11 @@ namespace BloodCenterManagementSystem.Logics.Validators
             RuleSet("ValidateNames", () =>
             {
                 RuleFor(m => m.FirstName)
-                .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty()
                 .MaximumLength(30)
                 .WithMessage("Failure to validate firstname");
 
                 RuleFor(m => m.Surname)
-                .Cascade(CascadeMode.StopOnFirstFailure)
                 .NotEmpty()
                 .MaximumLength(30)
                 .WithMessage("Failure to validate surname");

@@ -35,24 +35,51 @@ namespace BloodCenterManagementSystem.Logics.Validators
 
         public BloodDonatorValidator()
         {
-            RuleFor(m => m.PhoneNumber)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+            //RuleFor(m => m.PhoneNumber)
+            //    .Cascade(CascadeMode.StopOnFirstFailure)
+            //    .NotEmpty()
+            //    .Must(PhoneNumbervalidator)
+            //    .Must(x => x.ToString().Length == 9)
+            //    .WithMessage("Failure to validate phone number");
+
+            //RuleFor(m => m.HomeAdress)
+            //    .Cascade(CascadeMode.StopOnFirstFailure)
+            //    .NotEmpty()
+            //    .MaximumLength(50)
+            //    .WithMessage("Failure to validate home adress");
+
+            //RuleFor(m => m.Pesel)
+            //    .Cascade(CascadeMode.StopOnFirstFailure)
+            //    .NotEmpty()
+            //    .Must(PeselValidation)
+            //    .WithMessage("Failure to valdiate pesel");
+
+            RuleSet("ValidatePhoneNumber", () =>
+            {
+                RuleFor(m => m.PhoneNumber)
                 .NotEmpty()
                 .Must(PhoneNumbervalidator)
                 .Must(x => x.ToString().Length == 9)
                 .WithMessage("Failure to validate phone number");
+            });
 
-            RuleFor(m => m.HomeAdress)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+            RuleSet("ValidateHomeAdress", () =>
+            {
+                RuleFor(m => m.HomeAdress)
                 .NotEmpty()
                 .MaximumLength(50)
                 .WithMessage("Failure to validate home adress");
+            });
 
-            RuleFor(m => m.Pesel)
-                .Cascade(CascadeMode.StopOnFirstFailure)
+            RuleSet("ValidatePesel", () =>
+            {
+                RuleFor(m => m.Pesel)
                 .NotEmpty()
                 .Must(PeselValidation)
                 .WithMessage("Failure to valdiate pesel");
+            });
+
+
         }
 
 
