@@ -56,7 +56,7 @@ namespace BloodCenterManagementSystem.Logics.Users
              options =>
             {
                 options.IncludeRuleSets("ValidatePassword");
-            }); ;
+            });
 
             if (!passwordValidation.IsValid)
             {
@@ -108,6 +108,5 @@ namespace BloodCenterManagementSystem.Logics.Users
 
             return Result.Ok(tokenData);
         }
-
     }
 }
