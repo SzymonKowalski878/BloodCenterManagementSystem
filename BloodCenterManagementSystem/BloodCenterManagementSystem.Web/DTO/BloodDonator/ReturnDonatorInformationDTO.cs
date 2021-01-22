@@ -13,7 +13,7 @@ namespace BloodCenterManagementSystem.Web.DTO.BloodDonator
         public string HomeAdress { get; set; }
         public string PhoneNumber { get; set; }
         public int AmountOfBloodDonated { get; set; }
-        public int BloodTypeId { get; set; }
+        public BloodTypeNameDTO BloodType { get; set; }
         public ReturnUserInformationDTO User { get; set; }
     }
 }
