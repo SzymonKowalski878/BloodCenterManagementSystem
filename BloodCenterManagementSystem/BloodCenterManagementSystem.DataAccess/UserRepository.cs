@@ -26,5 +26,10 @@ namespace BloodCenterManagementSystem.DataAccess
 
             return result?.Password;
         }
+
+        public override UserModel GetById(int id)
+        {
+            return DataContext.Users.FirstOrDefault(m => m.BloodDonatorId == id);
+        }
     }
 }
