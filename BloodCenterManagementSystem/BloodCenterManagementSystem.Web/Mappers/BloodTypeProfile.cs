@@ -12,7 +12,7 @@ namespace BloodCenterManagementSystem.Web.Mappers
     {
         public BloodTypeProfile()
         {
-            CreateMap<BloodTypeNameDTO, BloodTypeModel>();
+            CreateMap<BloodTypeNameDTO, BloodTypeModel>().ReverseMap();
         }
     }
 }
