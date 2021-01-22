@@ -18,7 +18,7 @@ namespace BloodCenterManagementSystem.DataAccess
 
         public BloodDonatorModel ReturnDonatorInfo(int id)
         {
-            return DataContext.BloodDonators.Include(m => m.User).FirstOrDefault(m => m.User.Id == id);
+            return DataContext.BloodDonators.Include(m => m.User).Include(m=>m.BloodType).FirstOrDefault(m => m.User.Id == id);
         }
     }
 }
