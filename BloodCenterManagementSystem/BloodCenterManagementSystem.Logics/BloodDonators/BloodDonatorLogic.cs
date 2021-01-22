@@ -115,6 +115,13 @@ namespace BloodCenterManagementSystem.Logics.BloodDonators
                 return Result.Error<BloodDonatorModel>("Unable to find user with that id");
             }
 
+            var bloodType = BloodTypeRepository.GetById(bloodDonator.BloodTypeId);
+
+            if (bloodType == null)
+            {
+                return Result.Error<BloodDonatorModel>("Unable to get blood type by bloodTypeId");
+            }
+
             return Result.Ok(bloodDonator);
         }
 
