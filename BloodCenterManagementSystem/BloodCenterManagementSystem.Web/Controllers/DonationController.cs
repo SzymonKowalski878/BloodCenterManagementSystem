@@ -49,7 +49,7 @@ namespace BloodCenterManagementSystem.Web.Controllers
             return Ok(donationToReturn);
         }
 
-        [HttpPost,Route("ReturnAllDonatorDonations")]
+        [HttpPost,Route("ReturnDonatorsAllDonations")]
         public IActionResult ReturnAllDonatorDonations(IdHolder userId)
         {
             var result = DonationLogic.ReturnAllDonatorDonations(userId);
