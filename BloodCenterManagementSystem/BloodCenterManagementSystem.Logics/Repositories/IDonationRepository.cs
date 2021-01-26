@@ -8,5 +8,7 @@ namespace BloodCenterManagementSystem.Logics.Repositories
     public interface IDonationRepository:IRepository<DonationModel>
     {
         DonationModel ReturnDonatorNewestDonation(int Donatorid);
+        IEnumerable<DonationModel> ReturnDonatorsAllDonations(int userId);
+        DonationModel ReturnDonationDetails(int donationId);
     }
 }
