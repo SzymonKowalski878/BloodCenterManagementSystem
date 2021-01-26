@@ -2,6 +2,7 @@
 using BloodCenterManagementSystem.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace BloodCenterManagementSystem.DataAccess
@@ -14,6 +15,10 @@ namespace BloodCenterManagementSystem.DataAccess
 
         }
 
+        public DonationModel ReturnDonatorNewestDonation(int Donatorid)
+        {
+            return DataContext.Donations.Where(m => m.BloodDonatorId == Donatorid).OrderByDescending(m => m.DonationDate).FirstOrDefault();
+        }
 
     }
 }
