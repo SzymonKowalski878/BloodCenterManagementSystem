@@ -13,6 +13,8 @@ namespace BloodCenterManagementSystem.Web.Mappers
         public ResultOfExaminationProfile()
         {
             CreateMap<ResultOfExaminationModel, ResultOfExaminationDTO>();
+            CreateMap<AddResultOfExaminationDTO, ResultOfExaminationModel>();
+            CreateMap<UpdateResultOfExaminationDTO, ResultOfExaminationModel>();
         }
     }
 }
