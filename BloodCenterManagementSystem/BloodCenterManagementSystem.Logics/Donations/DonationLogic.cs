@@ -4,6 +4,7 @@ using BloodCenterManagementSystem.Logics.Repositories;
 using BloodCenterManagementSystem.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace BloodCenterManagementSystem.Logics.Donations
@@ -57,6 +58,41 @@ namespace BloodCenterManagementSystem.Logics.Donations
             DonationRepository.SaveChanges();
 
             
+
+            return Result.Ok(donation);
+        }
+
+        public Result<IEnumerable<DonationModel>>ReturnAllDonatorDonations(IdHolder userId)
+        {
+            if (userId == null)
+            {
+                return Result.Error<IEnumerable<DonationModel>>("Data containing user id was null");
+            }
+
+            var donations = DonationRepository.ReturnDonatorsAllDonations(userId.Id);
+
+            if (donations.Count() == 0)
+            {
+                return Result.Error<IEnumerable<DonationModel>>("There are no atempted donations by this user");
+            }
+
+            return Result.Ok(donations);
+        }
+
+
+        public Result<DonationModel> ReturnDonationDetails(IdHolder donationId)
+        {
+            if (donationId == null)
+            {
+                return Result.Error<DonationModel>("Data conatining donation id was null");
+            }
+
+            var donation = DonationRepository.ReturnDonationDetails(donationId.Id);
+
+            if(donation == null)
+            {
+                return Result.Error<DonationModel>("Unable to find donation with such id");
+            }
 
             return Result.Ok(donation);
         }

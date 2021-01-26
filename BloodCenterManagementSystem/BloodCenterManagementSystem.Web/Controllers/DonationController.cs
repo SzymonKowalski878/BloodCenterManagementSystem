@@ -3,6 +3,7 @@ using BloodCenterManagementSystem.Logics.Donations.DataHolders;
 using BloodCenterManagementSystem.Logics.Interfaces;
 using BloodCenterManagementSystem.Models;
 using BloodCenterManagementSystem.Web.DTO.Donation;
+using BloodCenterManagementSystem.Web.DTO.ResultOfExamination;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -48,5 +49,41 @@ namespace BloodCenterManagementSystem.Web.Controllers
             return Ok(donationToReturn);
         }
 
+        [HttpPost,Route("ReturnAllDonatorDonations")]
+        public IActionResult ReturnAllDonatorDonations(IdHolder userId)
+        {
+            var result = DonationLogic.ReturnAllDonatorDonations(userId);
+
+            if (!result.IsSuccessfull)
+            {
+                return BadRequest(result.ErrorMessages);
+            }
+
+            var list = new List<ReturnDonationDTO>();
+
+            foreach(var x in result.Value)
+            {
+                list.Add(Mapper.Map<DonationModel, ReturnDonationDTO>(x));
+            }
+
+            return Ok(result);
+        }
+
+        [HttpPost,Route("ReturnDonationDetails")]
+        public IActionResult ReturnDonationDetails(IdHolder donationId)
+        {
+            var result = DonationLogic.ReturnDonationDetails(donationId);
+
+            if (!result.IsSuccessfull)
+            {
+                return BadRequest(result.ErrorMessages);
+            }
+
+            //returns 204 if donation exists but there are no details results of examination
+
+            var toReturn = Mapper.Map<ResultOfExaminationModel, ResultOfExaminationDTO>(result.Value.ResultOfExamination);
+
+            return Ok(toReturn);
+        }
     }
 }

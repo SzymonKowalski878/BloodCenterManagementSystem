@@ -9,5 +9,7 @@ namespace BloodCenterManagementSystem.Logics.Interfaces
     public interface IDonationLogic:ILogic
     {
         Result<DonationModel> AddDonation(IdHolder data);
+        Result<IEnumerable<DonationModel>> ReturnAllDonatorDonations(IdHolder userId);
+        Result<DonationModel> ReturnDonationDetails(IdHolder donationId);
     }
 }
