@@ -30,5 +30,10 @@ namespace BloodCenterManagementSystem.DataAccess
         {
             return DataContext.Donations.Include(m => m.ResultOfExamination).FirstOrDefault(m => m.Id == donationId);
         }
+
+        public override DonationModel GetById(int id)
+        {
+            return DataContext.Donations.Include(m => m.ResultOfExamination).FirstOrDefault(m => m.Id == id);
+        }
     }
 }
