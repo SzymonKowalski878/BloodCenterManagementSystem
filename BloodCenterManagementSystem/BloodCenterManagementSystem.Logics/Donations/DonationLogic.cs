@@ -37,6 +37,13 @@ namespace BloodCenterManagementSystem.Logics.Donations
                 return Result.Error<DonationModel>("Unable to find user with that id");
             }
 
+            var latestDonation = DonationRepository.ReturnDonatorNewestDonation(donator.Id);
+
+            if (latestDonation != null && (latestDonation.Stage == "registered" || latestDonation.Stage=="blood examined" || latestDonation.Stage=="qualified"))
+            {
+                return Result.Error<DonationModel>("Donation in progress and the stage is " + latestDonation.Stage);
+            }
+
             var donation = new DonationModel
             {
                 Id = 0,
