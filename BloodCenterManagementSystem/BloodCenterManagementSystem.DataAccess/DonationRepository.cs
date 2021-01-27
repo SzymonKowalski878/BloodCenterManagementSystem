@@ -33,7 +33,7 @@ namespace BloodCenterManagementSystem.DataAccess
 
         public override DonationModel GetById(int id)
         {
-            return DataContext.Donations.Include(m => m.ResultOfExamination).FirstOrDefault(m => m.Id == id);
+            return DataContext.Donations.Include(m => m.BloodDonator).Include(m=>m.BloodStorage).FirstOrDefault(m => m.Id == id);
         }
 
         public IEnumerable<DonationModel> GetDonationsInQueue()
