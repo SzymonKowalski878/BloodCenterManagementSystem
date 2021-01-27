@@ -8,6 +8,7 @@ namespace BloodCenterManagementSystem.Web.DTO.User
 {
     public class ReturnUserInformationDTO
     {
+        public int Id { get; set; }
         public string Email { get; set; }
         public string FirstName { get; set; }
         public string Surname { get; set; }
