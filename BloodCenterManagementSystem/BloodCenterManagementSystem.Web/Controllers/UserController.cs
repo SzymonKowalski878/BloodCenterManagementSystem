@@ -3,6 +3,7 @@ using BloodCenterManagementSystem.Logics.Interfaces;
 using BloodCenterManagementSystem.Logics.Users.DataHolders;
 using BloodCenterManagementSystem.Models;
 using BloodCenterManagementSystem.Web.DTO;
+using BloodCenterManagementSystem.Web.DTO.BloodDonator;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -45,7 +46,9 @@ namespace BloodCenterManagementSystem.Web.Controllers
                 return BadRequest(result.ErrorMessages);
             }
 
-            return Ok(data);
+            var donatorToReturn = Mapper.Map<BloodDonatorModel, ReturnDonatorInformationDTO>(result.Value);
+
+            return Ok(donatorToReturn);
         }
 
         [HttpPost,Route("RegisterAccount")]
