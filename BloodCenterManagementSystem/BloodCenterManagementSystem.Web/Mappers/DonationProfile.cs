@@ -13,6 +13,7 @@ namespace BloodCenterManagementSystem.Web.Mappers
         public DonationProfile()
         {
             CreateMap<DonationModel, ReturnDonationDTO>();
+            CreateMap<DonationModel, ReturnDonationInQueueDTO>();
         }
     }
 }
