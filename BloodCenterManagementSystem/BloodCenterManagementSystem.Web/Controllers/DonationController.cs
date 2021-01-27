@@ -98,5 +98,25 @@ namespace BloodCenterManagementSystem.Web.Controllers
 
             return Ok(data);
         }
+
+        [HttpPost,Route("ReturnQueue")]
+        public IActionResult ReturnQueue(string stage)
+        {
+            var result = DonationLogic.ReturnQueue(stage);
+
+            if (!result.IsSuccessfull)
+            {
+                return BadRequest(result.ErrorMessages);
+            }
+
+            var list = new List<ReturnDonationInQueueDTO>();
+
+            foreach (var x in result.Value)
+            {
+                list.Add(Mapper.Map<DonationModel, ReturnDonationInQueueDTO>(x));
+            }
+
+            return Ok(list);
+        }
     }
 }

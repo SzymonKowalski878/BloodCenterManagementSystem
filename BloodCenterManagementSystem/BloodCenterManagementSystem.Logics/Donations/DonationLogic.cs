@@ -131,5 +131,25 @@ namespace BloodCenterManagementSystem.Logics.Donations
 
             return Result.Ok(donation);
         }
+
+        public Result<IEnumerable<DonationModel>> ReturnQueue(string stage)
+        {
+            if (string.IsNullOrEmpty(stage))
+            {
+                var results = DonationRepository.GetDonationsInQueue();
+
+                return Result.Ok(results);
+            }
+            else
+            {
+                if (!(stage == "qualified" || stage == "blood examinated" || stage == "registered"))
+                {
+                    return Result.Error<IEnumerable<DonationModel>>("Wrong stage passed in the function");
+                }
+                var results = DonationRepository.GetDonationInQueue(stage);
+
+                return Result.Ok(results);
+            }
+        }
     }
 }

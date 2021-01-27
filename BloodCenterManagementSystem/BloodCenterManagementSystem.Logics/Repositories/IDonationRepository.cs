@@ -10,5 +10,7 @@ namespace BloodCenterManagementSystem.Logics.Repositories
         DonationModel ReturnDonatorNewestDonation(int Donatorid);
         IEnumerable<DonationModel> ReturnDonatorsAllDonations(int userId);
         DonationModel ReturnDonationDetails(int donationId);
+        IEnumerable<DonationModel> GetDonationsInQueue();
+        IEnumerable<DonationModel> GetDonationInQueue(string stage);
     }
 }

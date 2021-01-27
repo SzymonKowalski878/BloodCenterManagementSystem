@@ -12,5 +12,6 @@ namespace BloodCenterManagementSystem.Logics.Interfaces
         Result<IEnumerable<DonationModel>> ReturnAllDonatorDonations(IdHolder userId);
         Result<DonationModel> ReturnDonationDetails(IdHolder donationId);
         Result<DonationModel> UpdateDonationStage(UpdateDonationStage data);
+        Result<IEnumerable<DonationModel>> ReturnQueue(string stage);
     }
 }

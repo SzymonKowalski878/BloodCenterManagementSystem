@@ -35,5 +35,38 @@ namespace BloodCenterManagementSystem.DataAccess
         {
             return DataContext.Donations.Include(m => m.ResultOfExamination).FirstOrDefault(m => m.Id == id);
         }
+
+        public IEnumerable<DonationModel> GetDonationsInQueue()
+        {
+            var list = new List<DonationModel>();
+            
+            var registered = DataContext.Donations.Include(m => m.BloodDonator).Include(m => m.BloodDonator.User).Where(m => m.Stage == "registered");
+
+            foreach(var x in registered)
+            {
+                list.Add(x);
+            }
+
+            var qualified = DataContext.Donations.Include(m => m.BloodDonator).Include(m => m.BloodDonator.User).Where(m => m.Stage == "qualified");
+
+            foreach (var x in qualified)
+            {
+                list.Add(x);
+            }
+
+            var examinated = DataContext.Donations.Include(m => m.BloodDonator).Include(m => m.BloodDonator.User).Where(m => m.Stage == "blood examinated");
+
+            foreach (var x in examinated)
+            {
+                list.Add(x);
+            }
+
+            return list;
+        }
+
+        public IEnumerable<DonationModel> GetDonationInQueue(string stage)
+        {
+            return DataContext.Donations.Include(m => m.BloodDonator).Include(m => m.BloodDonator.User).Where(m => m.Stage == stage);
+        }
     }
 }
