@@ -96,5 +96,40 @@ namespace BloodCenterManagementSystem.Logics.Donations
 
             return Result.Ok(donation);
         }
+
+        public Result<DonationModel> UpdateDonationStage(UpdateDonationStage data)
+        {
+            if(data == null)
+            {
+                return Result.Error<DonationModel>("Data containg donation stage and donation id was null");
+            }
+
+            if(!(data.Stage=="qualified"|| data.Stage == "not qualified" || data.Stage == "blood examinated" || data.Stage == "abandoned" || data.Stage=="donation finished"))
+            {
+                return Result.Error<DonationModel>("Wrong donation stage name passed in the function");
+            }
+
+            var donation = DonationRepository.GetById(data.Id);
+
+            if (donation == null)
+            {
+                return Result.Error<DonationModel>("Unable to find donation with passed id");
+            }
+
+            if(data.Stage == "not qualified")
+            {
+                if (string.IsNullOrEmpty(data.RejectionReason))
+                {
+                    return Result.Error<DonationModel>("Rejection reason was null or empty while trying to set stage to not qualified");
+                }
+
+                donation.RejectionReason = data.RejectionReason;
+            }
+
+            donation.Stage = data.Stage;
+            DonationRepository.SaveChanges();
+
+            return Result.Ok(donation);
+        }
     }
 }

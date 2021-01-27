@@ -85,5 +85,18 @@ namespace BloodCenterManagementSystem.Web.Controllers
 
             return Ok(toReturn);
         }
+
+        [HttpPost,Route("UpdateDonationStage")]
+        public IActionResult UpdateDonationStage(UpdateDonationStage data)
+        {
+            var result = DonationLogic.UpdateDonationStage(data);
+
+            if (!result.IsSuccessfull)
+            {
+                return BadRequest(result.ErrorMessages);
+            }
+
+            return Ok(data);
+        }
     }
 }
