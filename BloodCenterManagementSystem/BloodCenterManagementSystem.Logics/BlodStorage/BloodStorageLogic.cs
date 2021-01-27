@@ -65,6 +65,18 @@ namespace BloodCenterManagementSystem.Logics.BlodStorage
                 DonationId = donation.Id,
             };
 
+            var bloodType = BloodTypeRepository.GetById(donation.BloodDonator.BloodTypeId);
+
+            if (bloodType == null)
+            {
+                return Result.Error<BloodStorageModel>("Unable to find blood type");
+            }
+
+            bloodType.AmmountOfBloodInBank += 450;
+
+            donation.BloodDonator.AmmountOfBloodDonated += 450;
+            donation.Stage = "donation finished";
+
             BloodStorageRepository.Add(unit);
             BloodStorageRepository.SaveChanges();
 
@@ -101,6 +113,8 @@ namespace BloodCenterManagementSystem.Logics.BlodStorage
                 BloodType = bloodType
             };
 
+            bloodType.AmmountOfBloodInBank += 450;
+
             BloodStorageRepository.Add(unit);
             BloodStorageRepository.SaveChanges();
 
@@ -123,7 +137,7 @@ namespace BloodCenterManagementSystem.Logics.BlodStorage
         {
             if(bloodUnitId== null)
             {
-                return Result.Error<BloodStorageModel>("bloo unit id data was null");
+                return Result.Error<BloodStorageModel>("blood unit id data was null");
             }
 
             var unit = BloodStorageRepository.GetById(bloodUnitId.Id);
@@ -134,6 +148,11 @@ namespace BloodCenterManagementSystem.Logics.BlodStorage
             }
 
             unit.IsAvailable = false;
+
+            var bloodType = BloodTypeRepository.GetById(unit.BloodTypeId);
+
+            bloodType.AmmountOfBloodInBank -= 450;
+
             BloodStorageRepository.SaveChanges();
 
             return Result.Ok(unit);
