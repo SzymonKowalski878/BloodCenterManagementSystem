@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BloodCenterManagementSystem.DataAccess.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20210116193259_InitialMigration")]
+    [Migration("20210127182156_InitialMigration")]
     partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -67,10 +67,10 @@ namespace BloodCenterManagementSystem.DataAccess.Migrations
                     b.Property<string>("BloodUnitLocation")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("DonationId")
+                    b.Property<int?>("DonationId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ForeignBloodUnitId")
+                    b.Property<int?>("ForeignBloodUnitId")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsAfterCovid")
@@ -84,7 +84,8 @@ namespace BloodCenterManagementSystem.DataAccess.Migrations
                     b.HasIndex("BloodTypeId");
 
                     b.HasIndex("DonationId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[DonationId] IS NOT NULL");
 
                     b.ToTable("BloodStorage");
                 });
@@ -261,9 +262,7 @@ namespace BloodCenterManagementSystem.DataAccess.Migrations
 
                     b.HasOne("BloodCenterManagementSystem.Models.DonationModel", "Donation")
                         .WithOne("BloodStorage")
-                        .HasForeignKey("BloodCenterManagementSystem.Models.BloodStorageModel", "DonationId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("BloodCenterManagementSystem.Models.BloodStorageModel", "DonationId");
 
                     b.Navigation("BloodType");
 

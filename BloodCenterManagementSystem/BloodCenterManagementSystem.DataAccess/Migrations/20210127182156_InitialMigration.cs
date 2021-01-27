@@ -94,12 +94,12 @@ namespace BloodCenterManagementSystem.DataAccess.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ForeignBloodUnitId = table.Column<int>(type: "int", nullable: false),
+                    ForeignBloodUnitId = table.Column<int>(type: "int", nullable: true),
                     BloodUnitLocation = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     IsAvailable = table.Column<bool>(type: "bit", nullable: false),
                     IsAfterCovid = table.Column<bool>(type: "bit", nullable: false),
                     BloodTypeId = table.Column<int>(type: "int", nullable: false),
-                    DonationId = table.Column<int>(type: "int", nullable: false)
+                    DonationId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -115,7 +115,7 @@ namespace BloodCenterManagementSystem.DataAccess.Migrations
                         column: x => x.DonationId,
                         principalTable: "Donations",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -175,7 +175,8 @@ namespace BloodCenterManagementSystem.DataAccess.Migrations
                 name: "IX_BloodStorage_DonationId",
                 table: "BloodStorage",
                 column: "DonationId",
-                unique: true);
+                unique: true,
+                filter: "[DonationId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Donations_BloodDonatorId",
