@@ -7,6 +7,7 @@ namespace BloodCenterManagementSystem.Web.DTO.BloodStorage
 {
     public class ReturnAddedUnitDTO
     {
+        public int Id { get; set; }
         public int? ForeignBloodUnitId { get; set; }
         public string BloodUnitLocation { get; set; }
         public bool IsAvailable { get; set; }
