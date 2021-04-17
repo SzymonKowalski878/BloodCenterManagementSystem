@@ -87,7 +87,7 @@ namespace BloodCenterManagementSystem.Web.Controllers
         }
 
         [HttpPost,Route("ChangeBloodUnitToUnavailable")]
-        [ProducesResponseType(typeof(IdHolder), 200)]
+        [ProducesResponseType(typeof(ReturnAddedUnitDTO), 200)]
         [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
         public IActionResult ChangeBloodUnitToUnavailable(IdHolder bloodUnitId)
         {
@@ -98,7 +98,9 @@ namespace BloodCenterManagementSystem.Web.Controllers
                 return BadRequest(result.ErrorMessages);
             }
 
-            return Ok(bloodUnitId);
+            var toReturn = Mapper.Map<BloodStorageModel, ReturnAddedUnitDTO>(result.Value);
+
+            return Ok(toReturn);
         }
     }
 }
