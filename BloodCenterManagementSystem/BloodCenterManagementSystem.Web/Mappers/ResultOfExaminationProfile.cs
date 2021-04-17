@@ -15,6 +15,7 @@ namespace BloodCenterManagementSystem.Web.Mappers
             CreateMap<ResultOfExaminationModel, ResultOfExaminationDTO>();
             CreateMap<AddResultOfExaminationDTO, ResultOfExaminationModel>();
             CreateMap<UpdateResultOfExaminationDTO, ResultOfExaminationModel>();
+            CreateMap<ResultOfExaminationModel, ResultOfExaminationWithoutDonatorDTO>();
         }
     }
 }

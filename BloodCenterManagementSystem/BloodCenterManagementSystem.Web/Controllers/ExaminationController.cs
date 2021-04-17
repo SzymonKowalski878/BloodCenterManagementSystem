@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BloodCenterManagementSystem.Logics;
 using BloodCenterManagementSystem.Logics.Interfaces;
 using BloodCenterManagementSystem.Models;
 using BloodCenterManagementSystem.Web.DTO.ResultOfExamination;
@@ -28,6 +29,8 @@ namespace BloodCenterManagementSystem.Web.Controllers
         }
 
         [HttpPost, Route("AddExamination")]
+        [ProducesResponseType(typeof(AddResultOfExaminationDTO), 200)]
+        [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
         public IActionResult AddExamination(AddResultOfExaminationDTO data)
         {
             var dataToAdd = Mapper.Map<AddResultOfExaminationDTO, ResultOfExaminationModel>(data);
@@ -43,6 +46,8 @@ namespace BloodCenterManagementSystem.Web.Controllers
         }
 
         [HttpPost,Route("UpdateExamination")]
+        [ProducesResponseType(typeof(UpdateResultOfExaminationDTO), 200)]
+        [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
         public IActionResult UpdateExamination(UpdateResultOfExaminationDTO data)
         {
             var dataToAdd = Mapper.Map<UpdateResultOfExaminationDTO, ResultOfExaminationModel>(data);

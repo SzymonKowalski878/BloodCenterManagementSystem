@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BloodCenterManagementSystem.Logics;
 using BloodCenterManagementSystem.Logics.Interfaces;
 using BloodCenterManagementSystem.Models;
 using BloodCenterManagementSystem.Web.DTO.BloodDonator;
@@ -29,6 +30,8 @@ namespace BloodCenterManagementSystem.Web.Controllers
         }
 
         [HttpPost, Route("GetDonatorInformation")]
+        [ProducesResponseType(typeof(ReturnDonatorInformationDTO), 200)]
+        [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
         public IActionResult Post(BloodTypeIdDTO id)
         {
             var bloodDonator = BloodDonatorLogic.ReturnDonatorInformation(id.Id);

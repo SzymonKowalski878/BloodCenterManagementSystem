@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BloodCenterManagementSystem.Logics;
 using BloodCenterManagementSystem.Logics.BlodStorage.DataHolders;
 using BloodCenterManagementSystem.Logics.Donations.DataHolders;
 using BloodCenterManagementSystem.Logics.Interfaces;
@@ -30,6 +31,8 @@ namespace BloodCenterManagementSystem.Web.Controllers
         }
 
         [HttpPost,Route("AddBloodUnitToStorage")]
+        [ProducesResponseType(typeof(ReturnAddedUnitDTO), 200)]
+        [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
         public IActionResult AddBloodUnitToStorage(AddBloodUnitToStorage data)
         {
             var result = BloodStorageLogic.AddBloodUnit(data);
@@ -45,6 +48,8 @@ namespace BloodCenterManagementSystem.Web.Controllers
         }
 
         [HttpPost,Route("AddForeignBloodUnitToStorage")]
+        [ProducesResponseType(typeof(ReturnAddedUnitDTO), 200)]
+        [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
         public IActionResult AddForeingBloodUnitToStorage(AddForeignBloodUnitToStorage data)
         {
             var result = BloodStorageLogic.AddForeignBloodUnit(data);
@@ -60,6 +65,8 @@ namespace BloodCenterManagementSystem.Web.Controllers
         }
 
         [HttpGet,Route("ReturnAllAvailableBloodUnits")]
+        [ProducesResponseType(typeof(List<ReturnAddedUnitDTO>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
         public IActionResult ReturnAllAvailableBloodUnits()
         {
             var result = BloodStorageLogic.ReturnAllAvailableBloodUnits();
@@ -80,6 +87,8 @@ namespace BloodCenterManagementSystem.Web.Controllers
         }
 
         [HttpPost,Route("ChangeBloodUnitToUnavailable")]
+        [ProducesResponseType(typeof(IdHolder), 200)]
+        [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
         public IActionResult ChangeBloodUnitToUnavailable(IdHolder bloodUnitId)
         {
             var result = BloodStorageLogic.ChangeBloodUnitToUnavailable(bloodUnitId);
@@ -89,7 +98,7 @@ namespace BloodCenterManagementSystem.Web.Controllers
                 return BadRequest(result.ErrorMessages);
             }
 
-            return Ok(result);
+            return Ok(bloodUnitId);
         }
     }
 }

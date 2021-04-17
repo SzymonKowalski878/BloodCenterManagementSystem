@@ -1,4 +1,6 @@
-﻿using BloodCenterManagementSystem.Logics.Interfaces;
+﻿using BloodCenterManagementSystem.Logics;
+using BloodCenterManagementSystem.Logics.Interfaces;
+using BloodCenterManagementSystem.Models;
 using BloodCenterManagementSystem.Web.DTO.BloodType;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -21,6 +23,8 @@ namespace BloodCenterManagementSystem.Web.Controllers
         }
 
         [HttpGet,Route("ReturnAllBloodTypes")]
+        [ProducesResponseType(typeof(IEnumerable<BloodTypeModel>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
         public IActionResult Get()
         {
             var result = BloodTypeLogic.GetAllBloodTypes();
@@ -34,6 +38,8 @@ namespace BloodCenterManagementSystem.Web.Controllers
         }
 
         [HttpPost,Route("ReturnBloodTypeById")]
+        [ProducesResponseType(typeof(BloodTypeModel), 200)]
+        [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
         public IActionResult Post(BloodTypeIdDTO data)
         {
             var result = BloodTypeLogic.GetById(data.Id);
@@ -43,7 +49,7 @@ namespace BloodCenterManagementSystem.Web.Controllers
                 return BadRequest(result.ErrorMessages);
             }
 
-            return Ok(result);
+            return Ok(result.Value);
         }
     }
 }

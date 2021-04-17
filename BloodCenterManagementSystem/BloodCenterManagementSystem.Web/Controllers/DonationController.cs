@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BloodCenterManagementSystem.Logics;
 using BloodCenterManagementSystem.Logics.Donations.DataHolders;
 using BloodCenterManagementSystem.Logics.Interfaces;
 using BloodCenterManagementSystem.Models;
@@ -30,6 +31,8 @@ namespace BloodCenterManagementSystem.Web.Controllers
         }
 
         [HttpPost,Route("AddDonation")]
+        [ProducesResponseType(typeof(ReturnDonationDTO), 200)]
+        [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
         public IActionResult Post(IdHolder data)
         {
             var result = DonationLogic.AddDonation(data);
@@ -50,6 +53,8 @@ namespace BloodCenterManagementSystem.Web.Controllers
         }
 
         [HttpPost,Route("ReturnDonatorsAllDonations")]
+        [ProducesResponseType(typeof(List<ReturnDonationSmallDTO>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
         public IActionResult ReturnAllDonatorDonations(IdHolder userId)
         {
             var result = DonationLogic.ReturnAllDonatorDonations(userId);
@@ -59,17 +64,20 @@ namespace BloodCenterManagementSystem.Web.Controllers
                 return BadRequest(result.ErrorMessages);
             }
 
-            var list = new List<ReturnDonationDTO>();
+            var list = new List<ReturnDonationSmallDTO>();
 
             foreach(var x in result.Value)
             {
-                list.Add(Mapper.Map<DonationModel, ReturnDonationDTO>(x));
+                list.Add(Mapper.Map<DonationModel, ReturnDonationSmallDTO>(x));
             }
 
-            return Ok(result);
+            return Ok(list);
         }
 
         [HttpPost,Route("ReturnDonationDetails")]
+        [ProducesResponseType(typeof(ReturnDonationDetailsDTO), 200)]
+        [ProducesResponseType(204)] 
+        [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
         public IActionResult ReturnDonationDetails(IdHolder donationId)
         {
             var result = DonationLogic.ReturnDonationDetails(donationId);
@@ -81,12 +89,14 @@ namespace BloodCenterManagementSystem.Web.Controllers
 
             //returns 204 if donation exists but there are no details results of examination
 
-            var toReturn = Mapper.Map<ResultOfExaminationModel, ResultOfExaminationDTO>(result.Value.ResultOfExamination);
+            var toReturn = Mapper.Map<DonationModel, ReturnDonationDetailsDTO>(result.Value);
 
             return Ok(toReturn);
         }
 
         [HttpPost,Route("UpdateDonationStage")]
+        [ProducesResponseType(typeof(UpdateDonationStage), 200)]
+        [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
         public IActionResult UpdateDonationStage(UpdateDonationStage data)
         {
             var result = DonationLogic.UpdateDonationStage(data);
@@ -100,6 +110,8 @@ namespace BloodCenterManagementSystem.Web.Controllers
         }
 
         [HttpPost,Route("ReturnQueue")]
+        [ProducesResponseType(typeof(ReturnDonationInQueueDTO), 200)]
+        [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
         public IActionResult ReturnQueue(string stage)
         {
             var result = DonationLogic.ReturnQueue(stage);

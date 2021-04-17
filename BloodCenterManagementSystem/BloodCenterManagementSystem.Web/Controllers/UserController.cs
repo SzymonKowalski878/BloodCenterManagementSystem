@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BloodCenterManagementSystem.Logics;
 using BloodCenterManagementSystem.Logics.Interfaces;
 using BloodCenterManagementSystem.Logics.Users.DataHolders;
 using BloodCenterManagementSystem.Models;
@@ -35,6 +36,8 @@ namespace BloodCenterManagementSystem.Web.Controllers
         }
 
         [HttpPost,Route("RegisterDonator")]
+        [ProducesResponseType(typeof(ReturnDonatorInformationDTO), 200)]
+        [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
         public IActionResult Post(AddBloodDonatorDTO data)
         {
             var donatorToAdd = Mapper.Map<AddBloodDonatorDTO, BloodDonatorModel>(data);
@@ -52,6 +55,8 @@ namespace BloodCenterManagementSystem.Web.Controllers
         }
 
         [HttpPost,Route("RegisterAccount")]
+        [ProducesResponseType(typeof(UserEmailAndPassword), 200)]
+        [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
         public IActionResult Post(UserEmailAndPassword data)
         {
             var result = UserLogic.RegisterAccount(data);
@@ -65,6 +70,8 @@ namespace BloodCenterManagementSystem.Web.Controllers
         }
 
         [HttpPost, Route("Login")]
+        [ProducesResponseType(typeof(UserToken),200)]
+        [ProducesResponseType(typeof(IEnumerable<ErrorMessage>),400)]
         public IActionResult Post(UserIdAndPassword data)
         {
             var result = UserLogic.Login(data);
@@ -78,6 +85,8 @@ namespace BloodCenterManagementSystem.Web.Controllers
         }
 
         [HttpPost,Route("UpdateUserdata")]
+        [ProducesResponseType(typeof(UpdateUserData), 200)]
+        [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
         public IActionResult Post(UpdateUserData data)
         {
             if(data == null)
