@@ -29,7 +29,7 @@ namespace BloodCenterManagementSystem.DataAccess
 
         public override UserModel GetById(int id)
         {
-            return DataContext.Users.FirstOrDefault(m => m.BloodDonatorId == id);
+            return DataContext.Users.FirstOrDefault(m => m.Id == id);
         }
     }
 }

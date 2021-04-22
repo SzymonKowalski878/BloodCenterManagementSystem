@@ -5,6 +5,7 @@ using BloodCenterManagementSystem.Logics.Users.DataHolders;
 using BloodCenterManagementSystem.Models;
 using BloodCenterManagementSystem.Web.DTO;
 using BloodCenterManagementSystem.Web.DTO.BloodDonator;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -35,6 +36,7 @@ namespace BloodCenterManagementSystem.Web.Controllers
             _userLogic = userLogic;
         }
 
+        [Authorize(Policy ="Worker")]
         [HttpPost,Route("RegisterDonator")]
         [ProducesResponseType(typeof(ReturnDonatorInformationDTO), 200)]
         [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
@@ -83,7 +85,7 @@ namespace BloodCenterManagementSystem.Web.Controllers
 
             return Ok(result.Value);
         }
-
+        [Authorize(Policy = "Authenticated")]
         [HttpPost,Route("UpdateUserdata")]
         [ProducesResponseType(typeof(UpdateUserData), 200)]
         [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]

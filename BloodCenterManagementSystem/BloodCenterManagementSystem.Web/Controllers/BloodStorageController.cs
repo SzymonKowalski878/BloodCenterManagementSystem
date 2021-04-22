@@ -5,6 +5,7 @@ using BloodCenterManagementSystem.Logics.Donations.DataHolders;
 using BloodCenterManagementSystem.Logics.Interfaces;
 using BloodCenterManagementSystem.Models;
 using BloodCenterManagementSystem.Web.DTO.BloodStorage;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -30,6 +31,7 @@ namespace BloodCenterManagementSystem.Web.Controllers
             _mapper = mapper;
         }
 
+        [Authorize(Policy = "Worker")]
         [HttpPost,Route("AddBloodUnitToStorage")]
         [ProducesResponseType(typeof(ReturnAddedUnitDTO), 200)]
         [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
@@ -47,6 +49,7 @@ namespace BloodCenterManagementSystem.Web.Controllers
             return Ok(toReturn);
         }
 
+        [Authorize(Policy = "Worker")]
         [HttpPost,Route("AddForeignBloodUnitToStorage")]
         [ProducesResponseType(typeof(ReturnAddedUnitDTO), 200)]
         [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
@@ -64,6 +67,7 @@ namespace BloodCenterManagementSystem.Web.Controllers
             return Ok(toReturn);
         }
 
+        [Authorize(Policy = "Worker")]
         [HttpGet,Route("ReturnAllAvailableBloodUnits")]
         [ProducesResponseType(typeof(List<ReturnAddedUnitDTO>), 200)]
         [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
@@ -86,6 +90,7 @@ namespace BloodCenterManagementSystem.Web.Controllers
             return Ok(list);
         }
 
+        [Authorize(Policy = "Worker")]
         [HttpPost,Route("ChangeBloodUnitToUnavailable")]
         [ProducesResponseType(typeof(ReturnAddedUnitDTO), 200)]
         [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]

@@ -4,6 +4,7 @@ using BloodCenterManagementSystem.Logics.Interfaces;
 using BloodCenterManagementSystem.Models;
 using BloodCenterManagementSystem.Web.DTO.BloodDonator;
 using BloodCenterManagementSystem.Web.DTO.BloodType;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -29,6 +30,7 @@ namespace BloodCenterManagementSystem.Web.Controllers
             _mapper = mapper;
         }
 
+        [Authorize(Policy = "Authenticated")]
         [HttpPost, Route("GetDonatorInformation")]
         [ProducesResponseType(typeof(ReturnDonatorInformationDTO), 200)]
         [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]

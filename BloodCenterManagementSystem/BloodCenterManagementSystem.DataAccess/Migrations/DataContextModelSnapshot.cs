@@ -208,7 +208,7 @@ namespace BloodCenterManagementSystem.DataAccess.Migrations
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
-                    b.Property<int>("BloodDonatorId")
+                    b.Property<int?>("BloodDonatorId")
                         .HasColumnType("int");
 
                     b.Property<string>("Email")
@@ -230,7 +230,8 @@ namespace BloodCenterManagementSystem.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("BloodDonatorId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[BloodDonatorId] IS NOT NULL");
 
                     b.HasIndex("Email")
                         .IsUnique()
@@ -294,8 +295,7 @@ namespace BloodCenterManagementSystem.DataAccess.Migrations
                     b.HasOne("BloodCenterManagementSystem.Models.BloodDonatorModel", "BloodDonator")
                         .WithOne("User")
                         .HasForeignKey("BloodCenterManagementSystem.Models.UserModel", "BloodDonatorId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("BloodDonator");
                 });

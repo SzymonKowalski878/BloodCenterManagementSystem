@@ -5,6 +5,7 @@ using BloodCenterManagementSystem.Logics.Interfaces;
 using BloodCenterManagementSystem.Models;
 using BloodCenterManagementSystem.Web.DTO.Donation;
 using BloodCenterManagementSystem.Web.DTO.ResultOfExamination;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -30,6 +31,7 @@ namespace BloodCenterManagementSystem.Web.Controllers
             _mapper = mapper;
         }
 
+        [Authorize(Policy = "Worker")]
         [HttpPost,Route("AddDonation")]
         [ProducesResponseType(typeof(ReturnDonationDTO), 200)]
         [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
@@ -52,6 +54,7 @@ namespace BloodCenterManagementSystem.Web.Controllers
             return Ok(donationToReturn);
         }
 
+        [Authorize(Policy = "Authenticated")]
         [HttpPost,Route("ReturnDonatorsAllDonations")]
         [ProducesResponseType(typeof(List<ReturnDonationSmallDTO>), 200)]
         [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
@@ -74,6 +77,7 @@ namespace BloodCenterManagementSystem.Web.Controllers
             return Ok(list);
         }
 
+        [Authorize(Policy = "Authenticated")]
         [HttpPost,Route("ReturnDonationDetails")]
         [ProducesResponseType(typeof(ReturnDonationDetailsDTO), 200)]
         [ProducesResponseType(204)] 
@@ -94,6 +98,7 @@ namespace BloodCenterManagementSystem.Web.Controllers
             return Ok(toReturn);
         }
 
+        [Authorize(Policy = "Worker")]
         [HttpPost,Route("UpdateDonationStage")]
         [ProducesResponseType(typeof(UpdateDonationStage), 200)]
         [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
@@ -109,6 +114,7 @@ namespace BloodCenterManagementSystem.Web.Controllers
             return Ok(data);
         }
 
+        [Authorize(Policy = "Worker")]
         [HttpPost,Route("ReturnQueue")]
         [ProducesResponseType(typeof(ReturnDonationInQueueDTO), 200)]
         [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]

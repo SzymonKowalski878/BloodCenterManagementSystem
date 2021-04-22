@@ -3,6 +3,7 @@ using BloodCenterManagementSystem.Logics;
 using BloodCenterManagementSystem.Logics.Interfaces;
 using BloodCenterManagementSystem.Models;
 using BloodCenterManagementSystem.Web.DTO.ResultOfExamination;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -28,6 +29,7 @@ namespace BloodCenterManagementSystem.Web.Controllers
             _mapper = mapper;
         }
 
+        [Authorize(Policy = "Worker")]
         [HttpPost, Route("AddExamination")]
         [ProducesResponseType(typeof(AddResultOfExaminationDTO), 200)]
         [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
@@ -45,6 +47,7 @@ namespace BloodCenterManagementSystem.Web.Controllers
             return Ok(data);
         }
 
+        [Authorize(Policy = "Worker")]
         [HttpPost,Route("UpdateExamination")]
         [ProducesResponseType(typeof(UpdateResultOfExaminationDTO), 200)]
         [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]

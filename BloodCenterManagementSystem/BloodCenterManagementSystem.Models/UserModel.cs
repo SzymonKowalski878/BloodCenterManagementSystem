@@ -11,7 +11,7 @@ namespace BloodCenterManagementSystem.Models
         public string FirstName { get; set; }
         public string Surname { get; set; }
         public string Role { get; set; }
-        public virtual int BloodDonatorId { get; set; }
+        public virtual int? BloodDonatorId { get; set; }
         public virtual BloodDonatorModel BloodDonator { get; set; }
     }
 }
