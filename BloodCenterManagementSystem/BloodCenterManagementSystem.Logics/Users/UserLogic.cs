@@ -1,4 +1,5 @@
-﻿using BloodCenterManagementSystem.Logics.Interfaces;
+﻿using BloodCenterManagementSystem.Logics.Donations.DataHolders;
+using BloodCenterManagementSystem.Logics.Interfaces;
 using BloodCenterManagementSystem.Logics.Repositories;
 using BloodCenterManagementSystem.Logics.Users.DataHolders;
 using BloodCenterManagementSystem.Models;
@@ -107,6 +108,23 @@ namespace BloodCenterManagementSystem.Logics.Users
             }
 
             return Result.Ok(tokenData);
+        }
+
+        public Result<UserToken> RenewToken(int id)
+        {
+            var user = UserRepositroy.GetById(id);
+            if (user == null)
+            {
+                return Result.Error<UserToken>("Unable to find user with such id");
+            }
+
+            var token = AuthService.GenerateToken(user.Id, user.Role);
+            if (token == null)
+            {
+                return Result.Error<UserToken>("Error during token generation");
+            }
+
+            return Result.Ok(token);
         }
     }
 }

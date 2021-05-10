@@ -10,5 +10,6 @@ namespace BloodCenterManagementSystem.Logics.Interfaces
     {
         Result<UserModel> RegisterAccount(UserEmailAndPassword data);
         Result<UserToken> Login(UserIdAndPassword data);
+        Result<UserToken> RenewToken(int id);
     }
 }

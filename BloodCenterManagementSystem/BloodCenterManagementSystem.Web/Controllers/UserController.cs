@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace BloodCenterManagementSystem.Web.Controllers
@@ -104,6 +105,31 @@ namespace BloodCenterManagementSystem.Web.Controllers
             }
 
             return Ok(data);
+        }
+
+        [Authorize(Policy ="Authenticated")]
+        [HttpPost,Route("RegenerateToken")]
+        [ProducesResponseType(typeof(UserToken),200)]
+        [ProducesResponseType(typeof(IEnumerable<ErrorMessage>),400)]
+        public IActionResult Post()
+        {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+
+            var loggedInUser = identity.FindFirst(ClaimTypes.Name)?.Value;
+
+            if (loggedInUser == null)
+            {
+                return BadRequest("Unable to extract id from header");
+            }
+
+            var result = UserLogic.RenewToken(Int32.Parse(loggedInUser));
+
+            if (!result.IsSuccessfull)
+            {
+                return BadRequest(result.ErrorMessages);
+            }
+
+            return Ok(result.Value);
         }
     }
 }
