@@ -71,7 +71,7 @@ namespace BloodCenterManagementSystem.Logics.Users
             }
 
             user.Password = hashedPassword;
-            user.Role = "donator";
+            user.Role = "Donator";
             UserRepositroy.SaveChanges();
 
             return Result.Ok(user);
