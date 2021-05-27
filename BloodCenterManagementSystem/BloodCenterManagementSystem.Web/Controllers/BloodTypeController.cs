@@ -1,4 +1,5 @@
 ﻿using BloodCenterManagementSystem.Logics;
+using BloodCenterManagementSystem.Logics.BloodTypes.DataHolders;
 using BloodCenterManagementSystem.Logics.Interfaces;
 using BloodCenterManagementSystem.Models;
 using BloodCenterManagementSystem.Web.DTO.BloodType;
@@ -43,6 +44,21 @@ namespace BloodCenterManagementSystem.Web.Controllers
         public IActionResult Post(BloodTypeIdDTO data)
         {
             var result = BloodTypeLogic.GetById(data.Id);
+
+            if (!result.IsSuccessfull)
+            {
+                return BadRequest(result.ErrorMessages);
+            }
+
+            return Ok(result.Value);
+        }
+
+        [HttpPost,Route("ReturnBloodTypeByName")]
+        [ProducesResponseType(typeof(BloodTypeModel), 200)]
+        [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
+        public IActionResult Post(BloodTypeName data)
+        {
+            var result = BloodTypeLogic.GetByName(data);
 
             if (!result.IsSuccessfull)
             {

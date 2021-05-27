@@ -1,4 +1,6 @@
-﻿using BloodCenterManagementSystem.Logics.Interfaces;
+﻿using BloodCenterManagementSystem.Logics.BloodDonators.DataHolders;
+using BloodCenterManagementSystem.Logics.Donations.DataHolders;
+using BloodCenterManagementSystem.Logics.Interfaces;
 using BloodCenterManagementSystem.Logics.Repositories;
 using BloodCenterManagementSystem.Logics.Users.DataHolders;
 using BloodCenterManagementSystem.Models;
@@ -223,6 +225,23 @@ namespace BloodCenterManagementSystem.Logics.BloodDonators
             }
 
             return Result.Ok(toUpdate);
+        }
+
+        public Result<BloodDonatorModel> ReturnDonatorByPesel(PeselHolder pesel)
+        {
+            if (string.IsNullOrEmpty(pesel.Pesel))
+            {
+                return Result.Error<BloodDonatorModel>("Data was null");
+            }
+
+            var donator = BloodDonatorRepository.ReturnDoantorInfoByPesel(pesel.Pesel);
+
+            if(donator == null)
+            {
+                return Result.Error<BloodDonatorModel>("Unable to find donator with such pesel");
+            }
+
+            return Result.Ok(donator);
         }
     }
 }

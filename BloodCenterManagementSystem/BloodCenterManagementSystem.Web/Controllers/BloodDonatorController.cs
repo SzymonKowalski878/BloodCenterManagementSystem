@@ -46,5 +46,21 @@ namespace BloodCenterManagementSystem.Web.Controllers
             var donatorToReturn = Mapper.Map<BloodDonatorModel, ReturnDonatorInformationDTO>(bloodDonator.Value);
             return Ok(donatorToReturn);
         }
+
+        [Authorize(Policy = "Worker")]
+        [HttpPost,Route("GetDonatorInformationByPesel")]
+        public IActionResult Post(BloodCenterManagementSystem.Logics.BloodDonators.DataHolders.PeselHolder pesel)
+        {
+            var result = BloodDonatorLogic.ReturnDonatorByPesel(pesel);
+
+            if (!result.IsSuccessfull)
+            {
+                return BadRequest(result.ErrorMessages);
+            }
+
+            var donatorToReturn = Mapper.Map<BloodDonatorModel, ReturnDonatorInformationDTO>(result.Value);
+
+            return Ok(donatorToReturn);
+        }
     }
 }

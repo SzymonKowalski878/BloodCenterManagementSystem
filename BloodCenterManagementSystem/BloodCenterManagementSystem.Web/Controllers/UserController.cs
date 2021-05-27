@@ -86,6 +86,7 @@ namespace BloodCenterManagementSystem.Web.Controllers
 
             return Ok(result.Value);
         }
+
         [Authorize(Policy = "Authenticated")]
         [HttpPost,Route("UpdateUserdata")]
         [ProducesResponseType(typeof(UpdateUserData), 200)]

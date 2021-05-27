@@ -1,4 +1,5 @@
-﻿using BloodCenterManagementSystem.Logics.Users.DataHolders;
+﻿using BloodCenterManagementSystem.Logics.BloodDonators.DataHolders;
+using BloodCenterManagementSystem.Logics.Users.DataHolders;
 using BloodCenterManagementSystem.Models;
 using System;
 using System.Collections.Generic;
@@ -11,5 +12,6 @@ namespace BloodCenterManagementSystem.Logics.Interfaces
         Result<BloodDonatorModel> RegisterBloodDonator(BloodDonatorModel data);
         Result<BloodDonatorModel> ReturnDonatorInformation(int id);
         Result<BloodDonatorModel> UpdateUserData(UpdateUserData data);
+        Result<BloodDonatorModel> ReturnDonatorByPesel(PeselHolder pesel);
     }
 }

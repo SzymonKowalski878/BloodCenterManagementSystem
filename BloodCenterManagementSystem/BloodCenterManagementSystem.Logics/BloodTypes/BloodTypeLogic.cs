@@ -1,4 +1,5 @@
-﻿using BloodCenterManagementSystem.Logics.Interfaces;
+﻿using BloodCenterManagementSystem.Logics.BloodTypes.DataHolders;
+using BloodCenterManagementSystem.Logics.Interfaces;
 using BloodCenterManagementSystem.Logics.Repositories;
 using BloodCenterManagementSystem.Models;
 using System;
@@ -40,6 +41,23 @@ namespace BloodCenterManagementSystem.Logics.BloodTypes
             }
 
             return Result.Ok(data);
+        }
+
+        public Result<BloodTypeModel>GetByName(BloodTypeName bloodTypeName)
+        {
+            if (string.IsNullOrEmpty(bloodTypeName.BloodType))
+            {
+                return Result.Error<BloodTypeModel>("Data was null");
+            }
+
+            var bloodType = BloodTypeRepository.GetByBloodTypeName(bloodTypeName.BloodType);
+
+            if (bloodType == null)
+            {
+                return Result.Error<BloodTypeModel>("Unable to find blood type");
+            }
+
+            return Result.Ok(bloodType);
         }
     }
 }
