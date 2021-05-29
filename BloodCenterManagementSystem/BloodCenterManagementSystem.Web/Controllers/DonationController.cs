@@ -116,7 +116,7 @@ namespace BloodCenterManagementSystem.Web.Controllers
 
         [Authorize(Policy = "Worker")]
         [HttpPost,Route("ReturnQueue")]
-        [ProducesResponseType(typeof(ReturnDonationInQueueDTO), 200)]
+        [ProducesResponseType(typeof(IEnumerable<ReturnDonationInQueueDTO>), 200)]
         [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
         public IActionResult ReturnQueue(string stage)
         {
