@@ -116,6 +116,12 @@ namespace BloodCenterManagementSystem.Logics.Donations
                 return Result.Error<DonationModel>("Unable to find donation with passed id");
             }
 
+            if(data.Stage== "abandoned")
+            {
+                donation.RejectionReason = donation.Stage;
+                donation.Stage = "abandoned";
+            }
+
             if(data.Stage == "not qualified")
             {
                 if (string.IsNullOrEmpty(data.RejectionReason))
