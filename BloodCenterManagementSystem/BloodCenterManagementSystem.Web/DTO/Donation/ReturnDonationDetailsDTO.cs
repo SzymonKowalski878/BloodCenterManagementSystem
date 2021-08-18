@@ -11,6 +11,7 @@ namespace BloodCenterManagementSystem.Web.DTO.Donation
         public int Id { get; set; }
         public string Stage { get; set; }
         public DateTime DonationDate { get; set; }
+        public string RejectionReason { get; set; }
         public ResultOfExaminationWithoutDonatorDTO ResultOfExamination { get; set; }
     }
 }
