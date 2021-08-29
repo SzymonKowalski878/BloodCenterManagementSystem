@@ -1,5 +1,7 @@
 ﻿using Autofac;
 using BloodCenterManagementSystem.Logics.Interfaces;
+using BloodCenterManagementSystem.Models;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +16,15 @@ namespace BloodCenterManagementSystem.Web.Autofac.Modules
             builder.RegisterAssemblyTypes(typeof(ILogic).Assembly)
                 .Where(t => typeof(ILogic).IsAssignableFrom(t))
                 .AsImplementedInterfaces();
+
+            builder.Register(c =>
+            {
+                var config = c.Resolve<IConfiguration>();
+                var emailConfig = config.GetSection("EmailConfiguration")
+                .Get<EmailConfigModel>();
+
+                return emailConfig;
+            }).AsSelf().InstancePerLifetimeScope();
         }
     }
 }
