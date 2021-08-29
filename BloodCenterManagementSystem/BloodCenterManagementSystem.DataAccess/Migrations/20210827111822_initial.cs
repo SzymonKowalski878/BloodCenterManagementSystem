@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace BloodCenterManagementSystem.DataAccess.Migrations
 {
-    public partial class InitialSetup : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -76,6 +76,7 @@ namespace BloodCenterManagementSystem.DataAccess.Migrations
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Surname = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Role = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
                     BloodDonatorId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>

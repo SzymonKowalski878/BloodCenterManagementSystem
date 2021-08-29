@@ -215,6 +215,9 @@ namespace BloodCenterManagementSystem.DataAccess.Migrations
                         .HasMaxLength(45)
                         .HasColumnType("nvarchar(45)");
 
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
                     b.Property<string>("FirstName")
                         .HasColumnType("nvarchar(max)");
 

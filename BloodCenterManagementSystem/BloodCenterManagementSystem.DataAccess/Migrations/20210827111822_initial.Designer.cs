@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BloodCenterManagementSystem.DataAccess.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20210421223450_InitialSetup")]
-    partial class InitialSetup
+    [Migration("20210827111822_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -216,6 +216,9 @@ namespace BloodCenterManagementSystem.DataAccess.Migrations
                     b.Property<string>("Email")
                         .HasMaxLength(45)
                         .HasColumnType("nvarchar(45)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
 
                     b.Property<string>("FirstName")
                         .HasColumnType("nvarchar(max)");
