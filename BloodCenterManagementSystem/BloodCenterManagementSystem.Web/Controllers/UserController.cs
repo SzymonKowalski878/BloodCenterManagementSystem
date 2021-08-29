@@ -5,6 +5,7 @@ using BloodCenterManagementSystem.Logics.Users.DataHolders;
 using BloodCenterManagementSystem.Models;
 using BloodCenterManagementSystem.Web.DTO;
 using BloodCenterManagementSystem.Web.DTO.BloodDonator;
+using BloodCenterManagementSystem.Web.DTO.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -28,13 +29,23 @@ namespace BloodCenterManagementSystem.Web.Controllers
         private readonly Lazy<IMapper> _mapper;
         protected IMapper Mapper => _mapper.Value;
 
+        private readonly Lazy<IEmailConfirmationService> _emailConfirmationService;
+        protected IEmailConfirmationService EmailConfirmationService => _emailConfirmationService.Value;
+
+        private readonly Lazy<IEmailSender> _emailSender;
+        protected IEmailSender EmailSender => _emailSender.Value;
+
         public UserController(Lazy<IBloodDonatorLogic> bloodDonatorLogic,
             Lazy<IMapper> mapper,
-            Lazy<IUserLogic>userLogic)
+            Lazy<IUserLogic>userLogic,
+            Lazy<IEmailConfirmationService> emailConfirmationService,
+            Lazy<IEmailSender> emailSender)
         {
             _bloodDonatorLogic = bloodDonatorLogic;
             _mapper = mapper;
             _userLogic = userLogic;
+            _emailConfirmationService = emailConfirmationService;
+            _emailSender = emailSender;
         }
 
         [Authorize(Policy ="Worker")]
@@ -132,5 +143,70 @@ namespace BloodCenterManagementSystem.Web.Controllers
 
             return Ok(result.Value);
         }
+
+        [Authorize(Policy = "Worker")]
+        [HttpPost,Route("RegisterWorker")]
+        public IActionResult RegisterWorker(AddWorkerDTO data)
+        {
+            var userToAdd = Mapper.Map<AddWorkerDTO, UserModel>(data);
+
+            var result = UserLogic.RegisterWokrer(userToAdd);
+
+            if (!result.IsSuccessfull)
+            {
+                return BadRequest(result.ErrorMessages);
+            }
+
+            return Ok(data);
+        }
+
+        [HttpPost, Route("SendMail")]
+        public IActionResult SendMail(EmailHolder email)
+        {
+            if (email.Email == null)
+            {
+                email.Email = "";
+            }
+
+            
+            var code = EmailConfirmationService.GenerateUserConfirmationToken(email.Email);
+
+            if (!code.IsSuccessfull)
+            {
+                return BadRequest(code.ErrorMessages);
+            }
+            var link = Url.Action(nameof(VerifyEmail), "User", new { userEmail = email.Email, code=code.Value.Token }, Request.Scheme, Request.Host.ToString());
+            var messageToSend = new MessageModel(new List<string> { email.Email }, "Blood bank email confirmation", link, null);
+
+            var result =  EmailSender.SendEmail(messageToSend);
+
+            if (!result.IsSuccessfull)
+            {
+                return BadRequest(result.ErrorMessages);
+            }
+
+            return Ok(link);
+        }
+
+        [HttpPost, Route("VerifyEmail")]
+        public IActionResult VerifyEmail(string userEmail, string code, PasswordHolder password)
+        {
+            var verificationResult = EmailConfirmationService.ValidateConfirmationToken(code);
+
+            if (!verificationResult.IsSuccessfull)
+            {
+                return BadRequest(verificationResult.ErrorMessages);
+            }
+
+            var result = UserLogic.SetNewPassword(userEmail, code, password.Password);
+
+            if (!result.IsSuccessfull)
+            {
+                BadRequest(result.ErrorMessages);
+            }
+
+            return Ok(userEmail);
+        }
     }
 }
+
