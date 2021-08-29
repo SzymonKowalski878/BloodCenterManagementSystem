@@ -3,9 +3,12 @@ using BloodCenterManagementSystem.Logics.Interfaces;
 using BloodCenterManagementSystem.Logics.Repositories;
 using BloodCenterManagementSystem.Logics.Users.DataHolders;
 using BloodCenterManagementSystem.Models;
+using EntityFramework.Exceptions.Common;
 using FluentValidation;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Text;
 
 namespace BloodCenterManagementSystem.Logics.Users
@@ -14,7 +17,7 @@ namespace BloodCenterManagementSystem.Logics.Users
     {
 
         private readonly Lazy<IUserRepository> _userRepository;
-        protected IUserRepository UserRepositroy => _userRepository.Value;
+        protected IUserRepository UserRepository => _userRepository.Value;
 
         private readonly Lazy<IValidator<UserModel>> _userValidator;
         protected IValidator<UserModel> UserValidator => _userValidator.Value;
@@ -43,7 +46,7 @@ namespace BloodCenterManagementSystem.Logics.Users
                 return Result.Error<UserModel>("Email was null or empty");
             }
 
-            var user = UserRepositroy.GetByEmail(data.Email);
+            var user = UserRepository.GetByEmail(data.Email);
 
             if(user == null)
             {
@@ -73,7 +76,7 @@ namespace BloodCenterManagementSystem.Logics.Users
 
             user.Password = hashedPassword;
             user.Role = "Donator";
-            UserRepositroy.SaveChanges();
+            UserRepository.SaveChanges();
 
             return Result.Ok(user);
         }
@@ -92,13 +95,17 @@ namespace BloodCenterManagementSystem.Logics.Users
                 return Result.Error<UserToken>("Error during authentication");
             }
 
-            var user = UserRepositroy.GetById(data.Id);
+            var user = UserRepository.GetById(data.Id);
 
             if (user == null)
             {
                 return Result.Error<UserToken>("Error while trying to get user from database");
             }
 
+            if (!user.EmailConfirmed)
+            {
+                return Result.Error<UserToken>("User must confirm email");
+            }
 
             var tokenData = AuthService.GenerateToken(user.Id, user.Role);
 
@@ -112,7 +119,7 @@ namespace BloodCenterManagementSystem.Logics.Users
 
         public Result<UserToken> RenewToken(int id)
         {
-            var user = UserRepositroy.GetById(id);
+            var user = UserRepository.GetById(id);
             if (user == null)
             {
                 return Result.Error<UserToken>("Unable to find user with such id");
@@ -125,6 +132,79 @@ namespace BloodCenterManagementSystem.Logics.Users
             }
 
             return Result.Ok(token);
+        }
+
+        public Result<UserModel> RegisterWokrer(UserModel data)
+        {
+            if (data == null)
+            {
+                return Result.Error<UserModel>("Data was null");
+            }
+
+            var userValidation = UserValidator.Validate(data, options =>
+            {
+                options.IncludeAllRuleSets();
+            });
+
+            if (!userValidation.IsValid)
+            {
+                return Result.Error<UserModel>("Error during user data validation");
+            }
+
+            var hashedPassword = AuthService.HashPassword(data.Password);
+
+            if (string.IsNullOrEmpty(hashedPassword))
+            {
+                return Result.Error<UserModel>("Error during password hashing");
+            }
+
+            data.Password = hashedPassword;
+            data.EmailConfirmed = true;
+            data.Role = "Worker";
+
+            try
+            {
+                UserRepository.Add(data);
+                UserRepository.SaveChanges();
+            }
+            catch(UniqueConstraintException ex)
+            {
+                return Result.Error<UserModel>(ex.Message);
+            }
+
+            return Result.Ok(data);
+        }
+
+        private string ReadClaim(string token, string claimType)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var securityToken = tokenHandler.ReadToken(token) as JwtSecurityToken;
+
+            var stringClaimValue = securityToken.Claims.First(claim => claim.Type == claimType).Value;
+            return stringClaimValue;
+        }
+
+        public Result<bool> SetNewPassword(string email, string authToken, string password)
+        {
+            var tokenEmail = ReadClaim(authToken, "email");
+            if (string.IsNullOrEmpty(tokenEmail) || email != tokenEmail)
+            {
+                return Result.Error<bool>("Error during validation");
+            }
+
+            var user = UserRepository.GetByEmail(email);
+
+            if (user == null)
+            {
+                return Result.Error<bool>("Error during validation");
+            }
+
+            user.Password = password;
+            user.EmailConfirmed = true;
+
+            UserRepository.SaveChanges();
+
+            return Result.Ok(true);
         }
     }
 }
