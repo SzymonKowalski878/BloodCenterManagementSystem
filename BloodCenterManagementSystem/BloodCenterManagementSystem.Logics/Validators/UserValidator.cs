@@ -32,6 +32,8 @@ namespace BloodCenterManagementSystem.Logics.Validators
             RuleSet("ValidateEmail", ()=>{
                 RuleFor(m => m.Email)
                 .EmailAddress()
+                .NotEmpty()
+                .NotNull()
                 .WithMessage("Error during email validation");
             });
 
