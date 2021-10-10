@@ -83,9 +83,9 @@ namespace BloodCenterManagementSystem.Logics.Services
                     client.Authenticate(OAuth2);
                     client.Send(mailMessage);
                 }
-                catch
+                catch(Exception ex)
                 {
-                    throw;
+                    throw(ex);
                 }
                 finally
                 {

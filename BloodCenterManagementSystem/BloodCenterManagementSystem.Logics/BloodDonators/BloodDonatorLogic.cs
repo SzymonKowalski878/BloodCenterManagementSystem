@@ -8,6 +8,7 @@ using EntityFramework.Exceptions.Common;
 using FluentValidation;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace BloodCenterManagementSystem.Logics.BloodDonators
@@ -242,6 +243,18 @@ namespace BloodCenterManagementSystem.Logics.BloodDonators
             }
 
             return Result.Ok(donator);
+        }
+
+        public Result<IEnumerable<BloodDonatorModel>> GetAll()
+        {
+            var result = BloodDonatorRepository.GetAll();
+
+            if (result.Count() == 0)
+            {
+                return Result.Error<IEnumerable<BloodDonatorModel>>("No users found");
+            }
+
+            return Result.Ok(result);
         }
     }
 }

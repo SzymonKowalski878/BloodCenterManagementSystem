@@ -133,14 +133,10 @@ namespace BloodCenterManagementSystem.Logics.BlodStorage
             return Result.Ok(units);
         }
 
-        public Result<BloodStorageModel> ChangeBloodUnitToUnavailable(IdHolder bloodUnitId)
+        public Result<BloodStorageModel> ChangeBloodUnitToUnavailable(int bloodUnitId)
         {
-            if(bloodUnitId== null)
-            {
-                return Result.Error<BloodStorageModel>("blood unit id data was null");
-            }
 
-            var unit = BloodStorageRepository.GetById(bloodUnitId.Id);
+            var unit = BloodStorageRepository.GetById(bloodUnitId);
 
             if(unit == null)
             {

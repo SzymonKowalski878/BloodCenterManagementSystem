@@ -12,6 +12,6 @@ namespace BloodCenterManagementSystem.Logics.Interfaces
         Result<BloodStorageModel> AddBloodUnit(AddBloodUnitToStorage data);
         Result<BloodStorageModel> AddForeignBloodUnit(AddForeignBloodUnitToStorage data);
         Result<IEnumerable<BloodStorageModel>> ReturnAllAvailableBloodUnits();
-        Result<BloodStorageModel> ChangeBloodUnitToUnavailable(IdHolder bloodUnitId);
+        Result<BloodStorageModel> ChangeBloodUnitToUnavailable(int bloodUnitId);
     }
 }

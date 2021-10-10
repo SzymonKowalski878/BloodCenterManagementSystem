@@ -43,14 +43,14 @@ namespace BloodCenterManagementSystem.Logics.BloodTypes
             return Result.Ok(data);
         }
 
-        public Result<BloodTypeModel>GetByName(BloodTypeName bloodTypeName)
+        public Result<BloodTypeModel>GetByName(string bloodTypeName)
         {
-            if (string.IsNullOrEmpty(bloodTypeName.BloodType))
+            if (string.IsNullOrEmpty(bloodTypeName))
             {
                 return Result.Error<BloodTypeModel>("Data was null");
             }
 
-            var bloodType = BloodTypeRepository.GetByBloodTypeName(bloodTypeName.BloodType);
+            var bloodType = BloodTypeRepository.GetByBloodTypeName(bloodTypeName);
 
             if (bloodType == null)
             {

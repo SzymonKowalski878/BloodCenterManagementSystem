@@ -24,14 +24,9 @@ namespace BloodCenterManagementSystem.Logics.Donations
             _donationRepository = donationRepository;
         }
 
-        public Result<DonationModel> AddDonation(IdHolder data)
+        public Result<DonationModel> AddDonation(int userId)
         {
-            if(data == null)
-            {
-                return Result.Error<DonationModel>("Id was null");
-            }
-
-            var donator = BloodDonatorRepository.ReturnDonatorInfo(data.Id);
+            var donator = BloodDonatorRepository.ReturnDonatorInfo(userId);
 
             if(donator == null || donator.User==null)
             {
@@ -62,14 +57,9 @@ namespace BloodCenterManagementSystem.Logics.Donations
             return Result.Ok(donation);
         }
 
-        public Result<IEnumerable<DonationModel>>ReturnAllDonatorDonations(IdHolder userId)
+        public Result<IEnumerable<DonationModel>>ReturnAllDonatorDonations(int userId)
         {
-            if (userId == null)
-            {
-                return Result.Error<IEnumerable<DonationModel>>("Data containing user id was null");
-            }
-
-            var donations = DonationRepository.ReturnDonatorsAllDonations(userId.Id);
+            var donations = DonationRepository.ReturnDonatorsAllDonations(userId);
 
             if (donations.Count() == 0)
             {
@@ -80,14 +70,10 @@ namespace BloodCenterManagementSystem.Logics.Donations
         }
 
 
-        public Result<DonationModel> ReturnDonationDetails(IdHolder donationId)
+        public Result<DonationModel> ReturnDonationDetails(int donationId)
         {
-            if (donationId == null)
-            {
-                return Result.Error<DonationModel>("Data conatining donation id was null");
-            }
 
-            var donation = DonationRepository.ReturnDonationDetails(donationId.Id);
+            var donation = DonationRepository.ReturnDonationDetails(donationId);
 
             if(donation == null)
             {
@@ -104,7 +90,7 @@ namespace BloodCenterManagementSystem.Logics.Donations
                 return Result.Error<DonationModel>("Data containg donation stage and donation id was null");
             }
 
-            if(!(data.Stage=="qualified"|| data.Stage == "not qualified" || data.Stage == "blood examinated" || data.Stage == "abandoned" || data.Stage=="donation finished"))
+            if(!(data.Stage=="qualified"|| data.Stage == "not qualified" || data.Stage == "blood examined" || data.Stage == "abandoned" || data.Stage=="donation finished"))
             {
                 return Result.Error<DonationModel>("Wrong donation stage name passed in the function");
             }
@@ -148,7 +134,7 @@ namespace BloodCenterManagementSystem.Logics.Donations
             }
             else
             {
-                if (!(stage == "qualified" || stage == "blood examinated" || stage == "registered"))
+                if (!(stage == "qualified" || stage == "blood examined" || stage == "registered"))
                 {
                     return Result.Error<IEnumerable<DonationModel>>("Wrong stage passed in the function");
                 }
@@ -156,6 +142,30 @@ namespace BloodCenterManagementSystem.Logics.Donations
 
                 return Result.Ok(results);
             }
+        }
+
+        public Result<IEnumerable<DonationModel>> ReturnAll()
+        {
+            var result = DonationRepository.GetAll();
+
+            if (result.Count() == 0)
+            {
+                return Result.Error<IEnumerable<DonationModel>>("No donations found");
+            }
+
+            return Result.Ok(result);
+        }
+
+        public Result<DonationModel> GetById(int donationId)
+        {
+            var result = DonationRepository.GetById(donationId);
+
+            if(result == null)
+            {
+                return Result.Error<DonationModel>("No donation found");
+            }
+
+            return Result.Ok(result);
         }
     }
 }
