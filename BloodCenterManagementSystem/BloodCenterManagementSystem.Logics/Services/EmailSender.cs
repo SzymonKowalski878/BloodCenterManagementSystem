@@ -67,7 +67,9 @@ namespace BloodCenterManagementSystem.Logics.Services
                 ClientSecret = Configuration.GetSection("GmailSmtpApi").GetSection("ClientSecret").Value
             };
 
-            var googleCredentials = GoogleWebAuthorizationBroker.AuthorizeAsync(secrets, new[] { GmailService.Scope.MailGoogleCom }, "878085@gmail.com", CancellationToken.None).Result;
+            var fromEmail = Configuration.GetSection("EmailConfiguration").GetSection("From").Value;
+
+            var googleCredentials = GoogleWebAuthorizationBroker.AuthorizeAsync(secrets, new[] { GmailService.Scope.MailGoogleCom }, fromEmail, CancellationToken.None).Result;
 
             if (googleCredentials.Token.IsExpired(SystemClock.Default))
             {
