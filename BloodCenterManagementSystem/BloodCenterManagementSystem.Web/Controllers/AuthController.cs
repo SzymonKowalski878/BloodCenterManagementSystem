@@ -137,5 +137,20 @@ namespace BloodCenterManagementSystem.Web.Controllers
 
             return Ok(result.Value);
         }
+
+        [HttpPost("/verifycode")]
+        [ProducesResponseType(typeof(string), 200)]
+        [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
+        public IActionResult VerifyCode([FromQuery] string code)
+        {
+            var verificationResult = EmailConfirmationService.ValidateConfirmationToken(code);
+
+            if (!verificationResult.IsSuccessfull)
+            {
+                return BadRequest(verificationResult.ErrorMessages);
+            }
+
+            return Ok(code);
+        }
     }
 }
