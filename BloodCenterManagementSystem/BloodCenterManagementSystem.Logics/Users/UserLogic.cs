@@ -34,53 +34,6 @@ namespace BloodCenterManagementSystem.Logics.Users
             _userRepository = userRepository;
         }
 
-        public Result<UserModel> RegisterAccount(UserEmailAndPassword data)
-        {
-            if (data == null)
-            {
-                return Result.Error<UserModel>("Data was null");
-            }
-
-            if (string.IsNullOrEmpty(data.Email))
-            {
-                return Result.Error<UserModel>("Email was null or empty");
-            }
-
-            var user = UserRepository.GetByEmail(data.Email);
-
-            if(user == null)
-            {
-                return Result.Error<UserModel>("Unable to find email");
-            }
-
-            var passwordValidation = UserValidator.Validate(new UserModel
-            {
-                Password = data.Password
-            },
-             options =>
-            {
-                options.IncludeRuleSets("ValidatePassword");
-            });
-
-            if (!passwordValidation.IsValid)
-            {
-                return Result.Error<UserModel>("Error during password validationn");
-            }
-
-            var hashedPassword = AuthService.HashPassword(data.Password);
-
-            if (string.IsNullOrEmpty(hashedPassword))
-            {
-                return Result.Error<UserModel>("Error during email hashing");
-            }
-
-            user.Password = hashedPassword;
-            user.Role = "Donator";
-            UserRepository.SaveChanges();
-
-            return Result.Ok(user);
-        }
-
         public Result<UserToken> Login(UserIdAndPassword data)
         {
             if(data == null)
@@ -184,27 +137,49 @@ namespace BloodCenterManagementSystem.Logics.Users
             return stringClaimValue;
         }
 
-        public Result<bool> SetNewPassword(string email, string authToken, string password)
+        public Result<string> RegisterAccount(string email,string authToken,string password)
         {
             var tokenEmail = ReadClaim(authToken, "email");
             if (string.IsNullOrEmpty(tokenEmail) || email != tokenEmail)
             {
-                return Result.Error<bool>("Error during validation");
+                return Result.Error<string>("Error during validation");
             }
 
             var user = UserRepository.GetByEmail(email);
 
             if (user == null)
             {
-                return Result.Error<bool>("Error during validation");
+                return Result.Error<string>("Error during validation");
             }
 
-            user.Password = password;
+            var passwordValidation = UserValidator.Validate(new UserModel
+            {
+                Password = password
+            },
+            options =>
+            {
+                options.IncludeRuleSets("ValidatePassword");
+            });
+
+            if (!passwordValidation.IsValid)
+            {
+                return Result.Error<string>("Error during password validationn");
+            }
+
+            var hashedPassword = AuthService.HashPassword(password);
+
+            if (string.IsNullOrEmpty(hashedPassword))
+            {
+                return Result.Error<string>("Error during email hashing");
+            }
+
+            user.Password = hashedPassword;
             user.EmailConfirmed = true;
+            user.Role = "Donator";
 
             UserRepository.SaveChanges();
 
-            return Result.Ok(true);
+            return Result.Ok(email);
         }
     }
 }

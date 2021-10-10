@@ -8,10 +8,9 @@ namespace BloodCenterManagementSystem.Logics.Interfaces
 {
     public interface IUserLogic:ILogic
     {
-        Result<UserModel> RegisterAccount(UserEmailAndPassword data);
+        Result<string> RegisterAccount(string email, string authToken, string password);
         Result<UserToken> Login(UserIdAndPassword data);
         Result<UserToken> RenewToken(int id);
         Result<UserModel> RegisterWokrer(UserModel data);
-        Result<bool> SetNewPassword(string email, string authToken, string password);
     }
 }

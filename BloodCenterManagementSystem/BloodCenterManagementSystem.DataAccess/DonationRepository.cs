@@ -33,7 +33,7 @@ namespace BloodCenterManagementSystem.DataAccess
 
         public override DonationModel GetById(int id)
         {
-            return DataContext.Donations.Include(m => m.BloodDonator).Include(m=>m.BloodStorage).FirstOrDefault(m => m.Id == id);
+            return DataContext.Donations.Include(m => m.BloodDonator).Include(m => m.BloodDonator.User).Include(m=>m.BloodDonator.BloodType).Include(m=>m.BloodStorage).FirstOrDefault(m => m.Id == id);
         }
 
         public IEnumerable<DonationModel> GetDonationsInQueue()
@@ -54,7 +54,7 @@ namespace BloodCenterManagementSystem.DataAccess
                 list.Add(x);
             }
 
-            var examinated = DataContext.Donations.Include(m => m.BloodDonator).Include(m => m.BloodDonator.User).Where(m => m.Stage == "blood examinated");
+            var examinated = DataContext.Donations.Include(m => m.BloodDonator).Include(m => m.BloodDonator.User).Where(m => m.Stage == "blood examined");
 
             foreach (var x in examinated)
             {
@@ -67,6 +67,11 @@ namespace BloodCenterManagementSystem.DataAccess
         public IEnumerable<DonationModel> GetDonationInQueue(string stage)
         {
             return DataContext.Donations.Include(m => m.BloodDonator).Include(m => m.BloodDonator.User).Where(m => m.Stage == stage);
+        }
+
+        public override IEnumerable<DonationModel> GetAll()
+        {
+            return DataContext.Donations.Include(m => m.BloodDonator).Include(m => m.BloodDonator.User);
         }
     }
 }

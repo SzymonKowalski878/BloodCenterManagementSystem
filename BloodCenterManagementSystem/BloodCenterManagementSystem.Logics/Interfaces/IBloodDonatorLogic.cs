@@ -13,5 +13,6 @@ namespace BloodCenterManagementSystem.Logics.Interfaces
         Result<BloodDonatorModel> ReturnDonatorInformation(int id);
         Result<BloodDonatorModel> UpdateUserData(UpdateUserData data);
         Result<BloodDonatorModel> ReturnDonatorByPesel(PeselHolder pesel);
+        Result<IEnumerable<BloodDonatorModel>> GetAll();
     }
 }
