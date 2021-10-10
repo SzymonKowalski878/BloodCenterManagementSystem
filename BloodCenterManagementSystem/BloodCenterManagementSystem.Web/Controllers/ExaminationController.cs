@@ -29,11 +29,11 @@ namespace BloodCenterManagementSystem.Web.Controllers
             _mapper = mapper;
         }
 
+        [HttpPost]
         [Authorize(Policy = "Worker")]
-        [HttpPost, Route("AddExamination")]
         [ProducesResponseType(typeof(AddResultOfExaminationDTO), 200)]
         [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
-        public IActionResult AddExamination(AddResultOfExaminationDTO data)
+        public IActionResult Post(AddResultOfExaminationDTO data)
         {
             var dataToAdd = Mapper.Map<AddResultOfExaminationDTO, ResultOfExaminationModel>(data);
 
@@ -47,11 +47,11 @@ namespace BloodCenterManagementSystem.Web.Controllers
             return Ok(data);
         }
 
+        [HttpPatch]
         [Authorize(Policy = "Worker")]
-        [HttpPost,Route("UpdateExamination")]
         [ProducesResponseType(typeof(UpdateResultOfExaminationDTO), 200)]
         [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
-        public IActionResult UpdateExamination(UpdateResultOfExaminationDTO data)
+        public IActionResult Patch(UpdateResultOfExaminationDTO data)
         {
             var dataToAdd = Mapper.Map<UpdateResultOfExaminationDTO, ResultOfExaminationModel>(data);
 

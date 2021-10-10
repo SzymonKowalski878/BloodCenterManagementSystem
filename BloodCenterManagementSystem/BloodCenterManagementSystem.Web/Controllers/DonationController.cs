@@ -16,7 +16,7 @@ namespace BloodCenterManagementSystem.Web.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class DonationController:Controller
+    public class DonationController : Controller
     {
         private readonly Lazy<IDonationLogic> _donationLogic;
         protected IDonationLogic DonationLogic => _donationLogic.Value;
@@ -30,14 +30,14 @@ namespace BloodCenterManagementSystem.Web.Controllers
             _donationLogic = donationLogic;
             _mapper = mapper;
         }
-
+      
+        [HttpPost("{userId}")]
         [Authorize(Policy = "Worker")]
-        [HttpPost,Route("AddDonation")]
         [ProducesResponseType(typeof(ReturnDonationDTO), 200)]
         [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
-        public IActionResult Post(IdHolder data)
+        public IActionResult AddDonation([FromRoute]int userId)
         {
-            var result = DonationLogic.AddDonation(data);
+            var result = DonationLogic.AddDonation(userId);
 
             if (!result.IsSuccessfull)
             {
@@ -54,73 +54,15 @@ namespace BloodCenterManagementSystem.Web.Controllers
             return Ok(donationToReturn);
         }
 
-        [Authorize(Policy = "Authenticated")]
-        [HttpPost,Route("ReturnDonatorsAllDonations")]
-        [ProducesResponseType(typeof(List<ReturnDonationSmallDTO>), 200)]
-        [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
-        public IActionResult ReturnAllDonatorDonations(IdHolder userId)
-        {
-            var result = DonationLogic.ReturnAllDonatorDonations(userId);
 
-            if (!result.IsSuccessfull)
-            {
-                return BadRequest(result.ErrorMessages);
-            }
 
-            var list = new List<ReturnDonationSmallDTO>();
-
-            foreach(var x in result.Value)
-            {
-                list.Add(Mapper.Map<DonationModel, ReturnDonationSmallDTO>(x));
-            }
-
-            return Ok(list);
-        }
-
-        [Authorize(Policy = "Authenticated")]
-        [HttpPost,Route("ReturnDonationDetails")]
-        [ProducesResponseType(typeof(ReturnDonationDetailsDTO), 200)]
-        [ProducesResponseType(204)] 
-        [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
-        public IActionResult ReturnDonationDetails(IdHolder donationId)
-        {
-            var result = DonationLogic.ReturnDonationDetails(donationId);
-
-            if (!result.IsSuccessfull)
-            {
-                return BadRequest(result.ErrorMessages);
-            }
-
-            //returns 204 if donation exists but there are no details results of examination
-
-            var toReturn = Mapper.Map<DonationModel, ReturnDonationDetailsDTO>(result.Value);
-
-            return Ok(toReturn);
-        }
-
+        [HttpGet("queue")]
         [Authorize(Policy = "Worker")]
-        [HttpPost,Route("UpdateDonationStage")]
-        [ProducesResponseType(typeof(UpdateDonationStage), 200)]
-        [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
-        public IActionResult UpdateDonationStage(UpdateDonationStage data)
-        {
-            var result = DonationLogic.UpdateDonationStage(data);
-
-            if (!result.IsSuccessfull)
-            {
-                return BadRequest(result.ErrorMessages);
-            }
-
-            return Ok(data);
-        }
-
-        [Authorize(Policy = "Worker")]
-        [HttpPost,Route("ReturnQueue")]
         [ProducesResponseType(typeof(IEnumerable<ReturnDonationInQueueDTO>), 200)]
         [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
-        public IActionResult ReturnQueue(string stage)
+        public IActionResult Queue([FromQuery] string donationStage)
         {
-            var result = DonationLogic.ReturnQueue(stage);
+            var result = DonationLogic.ReturnQueue(donationStage);
 
             if (!result.IsSuccessfull)
             {
@@ -135,6 +77,81 @@ namespace BloodCenterManagementSystem.Web.Controllers
             }
 
             return Ok(list);
+        }
+
+        [HttpGet("{donationId}/details")]
+        [Authorize(Policy = "Authenticated")]
+        [ProducesResponseType(typeof(ReturnDonationDetailsDTO), 200)]
+        [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
+        public IActionResult GetDonationDetails([FromRoute] int donationId)
+        {
+            var result = DonationLogic.ReturnDonationDetails(donationId);
+
+            if (!result.IsSuccessfull)
+            {
+                return BadRequest(result.ErrorMessages);
+            }
+
+            var toReturn = Mapper.Map<DonationModel, ReturnDonationDetailsDTO>(result.Value);
+
+            return Ok(toReturn);
+        }
+
+        [HttpGet("{donationId}")]
+        [Authorize(Policy = "Worker")]
+        [ProducesResponseType(typeof(ReturnDonationDTO), 200)]
+        [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
+        public IActionResult GetDonationById([FromRoute]int donationId)
+        {
+            var result = DonationLogic.GetById(donationId);
+
+            if (!result.IsSuccessfull)
+            {
+                return BadRequest(result.ErrorMessages);
+            }
+
+            var toReturn = Mapper.Map<DonationModel, ReturnDonationDTO>(result.Value);
+
+            return Ok(toReturn);
+        }
+
+        [HttpGet]
+        [Authorize(Policy = "Worker")]
+        [ProducesResponseType(typeof(IEnumerable<ReturnDonationInQueueDTO>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
+        public IActionResult GetAllDonations()
+        {
+            var result = DonationLogic.ReturnAll();
+
+            if (!result.IsSuccessfull)
+            {
+                return BadRequest(result.ErrorMessages);
+            }
+
+            var toReturn = new List<ReturnDonationInQueueDTO>();
+
+            foreach(var donation in result.Value)
+            {
+                toReturn.Add(Mapper.Map<DonationModel, ReturnDonationInQueueDTO>(donation));
+            }
+
+            return Ok(toReturn);
+        }
+
+
+        [HttpPatch]
+        [ProducesResponseType(typeof(UpdateDonationStage), 200)]
+        [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
+        public IActionResult Patch (UpdateDonationStage data)
+        {
+            var result = DonationLogic.UpdateDonationStage(data);
+
+            if (!result.IsSuccessfull)
+            {
+                return BadRequest(result.ErrorMessages);
+            }
+
+            return Ok(data);
         }
     }
 }
