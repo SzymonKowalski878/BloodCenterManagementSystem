@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 namespace BloodCenterManagementSystem.Web.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/blooddonators")]
     public class BloodDonatorController:Controller
     {
         private readonly Lazy<IBloodDonatorLogic> _bloodDonatorLogic;

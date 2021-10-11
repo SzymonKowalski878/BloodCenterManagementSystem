@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace BloodCenterManagementSystem.Web.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/bloodtypes")]
     public class BloodTypeController:Controller
     {
         private readonly Lazy<IBloodTypeLogic> _bloodTypeLogic;

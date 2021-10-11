@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 namespace BloodCenterManagementSystem.Web.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/examinations")]
     public class ExaminationController:Controller
     {
         private readonly Lazy<IResultOfExaminationLogic> _resultOfExamintaionLogic;
