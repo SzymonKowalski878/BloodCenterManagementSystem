@@ -96,6 +96,7 @@ namespace BloodCenterManagementSystem.Logics.BloodDonators
 
             data.BloodType = null;
             data.BloodTypeId = bloodType.Id;
+            data.User.Role = "Donator";
 
             try
             {

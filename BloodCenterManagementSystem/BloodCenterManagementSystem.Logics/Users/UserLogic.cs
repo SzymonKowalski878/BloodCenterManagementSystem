@@ -34,21 +34,21 @@ namespace BloodCenterManagementSystem.Logics.Users
             _userRepository = userRepository;
         }
 
-        public Result<UserToken> Login(UserIdAndPassword data)
+        public Result<UserToken> Login(UserEmailAndPassword data)
         {
             if(data == null)
             {
                 return Result.Error<UserToken>("Data was null");
             }
 
-            var authResult = AuthService.VerifyPassword(data.Id, data.Password);
+            var authResult = AuthService.VerifyPassword(data.Email, data.Password);
 
             if (!authResult)
             {
                 return Result.Error<UserToken>("Error during authentication");
             }
 
-            var user = UserRepository.GetById(data.Id);
+            var user = UserRepository.GetByEmail(data.Email);
 
             if (user == null)
             {
@@ -60,7 +60,7 @@ namespace BloodCenterManagementSystem.Logics.Users
                 return Result.Error<UserToken>("User must confirm email");
             }
 
-            var tokenData = AuthService.GenerateToken(user.Id, user.Role);
+            var tokenData = AuthService.GenerateToken(user.Email, user.Role);
 
             if (tokenData == null)
             {
@@ -70,15 +70,15 @@ namespace BloodCenterManagementSystem.Logics.Users
             return Result.Ok(tokenData);
         }
 
-        public Result<UserToken> RenewToken(int id)
+        public Result<UserToken> RenewToken(string email)
         {
-            var user = UserRepository.GetById(id);
+            var user = UserRepository.GetByEmail(email);
             if (user == null)
             {
                 return Result.Error<UserToken>("Unable to find user with such id");
             }
 
-            var token = AuthService.GenerateToken(user.Id, user.Role);
+            var token = AuthService.GenerateToken(user.Email, user.Role);
             if (token == null)
             {
                 return Result.Error<UserToken>("Error during token generation");

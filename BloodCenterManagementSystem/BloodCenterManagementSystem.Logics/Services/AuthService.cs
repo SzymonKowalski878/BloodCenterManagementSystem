@@ -58,10 +58,10 @@ namespace BloodCenterManagementSystem.Logics.Services
             
         }
 
-        public bool VerifyPassword(int id,string password)
+        public bool VerifyPassword(string email,string password)
         {
 
-            var passwordDb = UserRepository.GetUserPassword(id);
+            var passwordDb = UserRepository.GetUserPassword(email);
 
             if (string.IsNullOrEmpty(passwordDb) == true)
             {
@@ -94,7 +94,7 @@ namespace BloodCenterManagementSystem.Logics.Services
             return true;
         }
 
-        public UserToken GenerateToken(int id, string role)
+        public UserToken GenerateToken(string email, string role)
         {
             var secretKey = Configuration["SecretKey"];
 
@@ -106,7 +106,7 @@ namespace BloodCenterManagementSystem.Logics.Services
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.Name, id.ToString()),
+                    new Claim(ClaimTypes.Email, email),
                     new Claim("Role",role)
                 }),
                 Expires = DateTime.Now.AddHours(1),

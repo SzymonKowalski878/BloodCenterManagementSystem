@@ -40,7 +40,7 @@ namespace BloodCenterManagementSystem.Web.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(UserToken), 200)]
         [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
-        public IActionResult Post(UserIdAndPassword data)
+        public IActionResult Post(UserEmailAndPassword data)
         {
             var result = UserLogic.Login(data);
 
@@ -79,7 +79,7 @@ namespace BloodCenterManagementSystem.Web.Controllers
             else
             {
                 //link = Url.Action(nameof(VerifyEmail), "Auth", new { userEmail = email, code = code.Value.Token }, Request.Scheme, Request.Host.ToString());
-                link = "http://localhost:4200/setpassword" + "?userEmail=" + data.Email + "&code" + code.Value.Token;
+                link = "http://localhost:4200/setpassword" + "?userEmail=" + data.Email + "&code=" + code.Value.Token;
             }
 
             var messageToSend = new MessageModel(new List<string> { data.Email }, "Blood bank email confirmation", link, null);
@@ -123,14 +123,17 @@ namespace BloodCenterManagementSystem.Web.Controllers
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
 
-            var loggedInUser = identity.FindFirst(ClaimTypes.Name)?.Value;
+            var loggedInUser = identity.FindFirst(ClaimTypes.Email)?.Value;
 
             if (loggedInUser == null)
             {
-                return BadRequest("Unable to extract id from header");
+                return BadRequest(new ErrorMessage()
+                {
+                    Message = "Unable to extract email from header"
+                });
             }
 
-            var result = UserLogic.RenewToken(Int32.Parse(loggedInUser));
+            var result = UserLogic.RenewToken(loggedInUser);
 
             if (!result.IsSuccessfull)
             {

@@ -20,9 +20,9 @@ namespace BloodCenterManagementSystem.DataAccess
             return DataContext.Set<UserModel>().FirstOrDefault(m => m.Email == email);
         }
 
-        public string GetUserPassword(int id)
+        public string GetUserPassword(string email)
         {
-            var result = DataContext.Users.FirstOrDefault(m => m.Id == id);
+            var result = DataContext.Users.FirstOrDefault(m => m.Email == email);
 
             return result?.Password;
         }

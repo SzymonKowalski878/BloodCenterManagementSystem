@@ -8,6 +8,6 @@ namespace BloodCenterManagementSystem.Logics.Repositories
     public interface IUserRepository:IRepository<UserModel>
     {
         UserModel GetByEmail(string email);
-        string GetUserPassword(int  id);
+        string GetUserPassword(string  email);
     }
 }
