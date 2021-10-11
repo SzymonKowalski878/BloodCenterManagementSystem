@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 namespace BloodCenterManagementSystem.Web.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/Users")]
     public class UserController:Controller
     {
         private readonly Lazy<IBloodDonatorLogic> _bloodDonatorLogic;
@@ -44,10 +44,10 @@ namespace BloodCenterManagementSystem.Web.Controllers
         }
 
         [Authorize(Policy = "Authenticated")]
-        [HttpPost,Route("UpdateUserdata")]
+        [HttpPatch]
         [ProducesResponseType(typeof(UpdateUserData), 200)]
         [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
-        public IActionResult Post(UpdateUserData data)
+        public IActionResult Patch(UpdateUserData data)
         {
             if(data == null)
             {
@@ -65,7 +65,7 @@ namespace BloodCenterManagementSystem.Web.Controllers
         }
 
         [Authorize(Policy = "Worker")]
-        [HttpPost("/worker")]
+        [HttpPost("worker")]
         [ProducesResponseType(typeof(AddWorkerDTO), 400)]
         [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
         public IActionResult RegisterWorker(AddWorkerDTO data)

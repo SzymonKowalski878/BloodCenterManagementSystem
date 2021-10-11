@@ -14,7 +14,7 @@ using System.Web;
 namespace BloodCenterManagementSystem.Web.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/auth")]
     public class AuthController : Controller
     {
         private readonly Lazy<IUserLogic> _userLogic;
@@ -50,7 +50,7 @@ namespace BloodCenterManagementSystem.Web.Controllers
             return Ok(result.Value);
         }
 
-        [HttpPost("/sendmail")]
+        [HttpPost("sendmail")]
         [ProducesResponseType(typeof(string), 200)]
         [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
         public IActionResult SendMail([FromQuery] string email,[FromQuery] string route)
@@ -92,7 +92,7 @@ namespace BloodCenterManagementSystem.Web.Controllers
             return Ok(link);
         }
 
-        [HttpPost("/verifyemail")]
+        [HttpPost("verifyemail")]
         [ProducesResponseType(typeof(string), 200)]
         [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
         public IActionResult VerifyEmail(string userEmail, string code, string password)
@@ -114,7 +114,7 @@ namespace BloodCenterManagementSystem.Web.Controllers
             return Ok(userEmail);
         }
 
-        [HttpPost, Route("RegenerateToken")]
+        [HttpPost, Route("regeneratetoken")]
         [ProducesResponseType(typeof(UserToken), 200)]
         [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
         public IActionResult Post()
@@ -138,7 +138,7 @@ namespace BloodCenterManagementSystem.Web.Controllers
             return Ok(result.Value);
         }
 
-        [HttpPost("/verifycode")]
+        [HttpPost("verifycode")]
         [ProducesResponseType(typeof(string), 200)]
         [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
         public IActionResult VerifyCode([FromQuery] string code)

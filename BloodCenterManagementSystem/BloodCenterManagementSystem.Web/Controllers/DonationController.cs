@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 namespace BloodCenterManagementSystem.Web.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/donations")]
     public class DonationController : Controller
     {
         private readonly Lazy<IDonationLogic> _donationLogic;
@@ -31,7 +31,7 @@ namespace BloodCenterManagementSystem.Web.Controllers
             _mapper = mapper;
         }
       
-        [HttpPost("{userId}")]
+        [HttpPost]
         [Authorize(Policy = "Worker")]
         [ProducesResponseType(typeof(ReturnDonationDTO), 200)]
         [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]

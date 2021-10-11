@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 namespace BloodCenterManagementSystem.Web.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/bloodstorages")]
     public class BloodStorageController:Controller
     {
         private readonly Lazy<IBloodStorageLogic> _bloodStorageLogic;
@@ -128,7 +128,7 @@ namespace BloodCenterManagementSystem.Web.Controllers
             return Ok(toReturn);
         }
 
-        [HttpPost("/foreign")]
+        [HttpPost("foreign")]
         [Authorize(Policy = "Worker")]
         [ProducesResponseType(typeof(ReturnAddedUnitDTO), 200)]
         [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
