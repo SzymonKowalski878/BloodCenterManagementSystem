@@ -9,6 +9,6 @@ namespace BloodCenterManagementSystem.Logics.Interfaces
     {
         string HashPassword(string password);
         bool VerifyPassword(string email, string password);
-        UserToken GenerateToken(string email, string role);
+        UserToken GenerateToken(string email, string role,int id);
     }
 }

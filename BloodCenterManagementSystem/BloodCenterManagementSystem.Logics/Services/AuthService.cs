@@ -94,7 +94,7 @@ namespace BloodCenterManagementSystem.Logics.Services
             return true;
         }
 
-        public UserToken GenerateToken(string email, string role)
+        public UserToken GenerateToken(string email, string role,int id)
         {
             var secretKey = Configuration["SecretKey"];
 
@@ -107,7 +107,8 @@ namespace BloodCenterManagementSystem.Logics.Services
                 Subject = new ClaimsIdentity(new Claim[]
                 {
                     new Claim(ClaimTypes.Email, email),
-                    new Claim("Role",role)
+                    new Claim("Role",role),
+                    new Claim("UserId",id.ToString())
                 }),
                 Expires = DateTime.Now.AddHours(1),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),
