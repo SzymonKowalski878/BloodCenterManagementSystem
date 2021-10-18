@@ -60,7 +60,7 @@ namespace BloodCenterManagementSystem.Logics.Users
                 return Result.Error<UserToken>("User must confirm email");
             }
 
-            var tokenData = AuthService.GenerateToken(user.Email, user.Role);
+            var tokenData = AuthService.GenerateToken(user.Email, user.Role,user.Id);
 
             if (tokenData == null)
             {
@@ -78,7 +78,7 @@ namespace BloodCenterManagementSystem.Logics.Users
                 return Result.Error<UserToken>("Unable to find user with such id");
             }
 
-            var token = AuthService.GenerateToken(user.Email, user.Role);
+            var token = AuthService.GenerateToken(user.Email, user.Role,user.Id);
             if (token == null)
             {
                 return Result.Error<UserToken>("Error during token generation");
