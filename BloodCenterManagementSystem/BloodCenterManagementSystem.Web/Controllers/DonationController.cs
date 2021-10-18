@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace BloodCenterManagementSystem.Web.Controllers
@@ -92,13 +93,25 @@ namespace BloodCenterManagementSystem.Web.Controllers
                 return BadRequest(result.ErrorMessages);
             }
 
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+
+            var loggedInUserId = identity.FindFirst("UserId")?.Value;
+            var loggedInUserRole = identity.FindFirst("Role")?.Value;
+            if (!string.IsNullOrEmpty(loggedInUserRole) && loggedInUserRole == "Donator")
+            {
+                if (!string.IsNullOrEmpty(loggedInUserId) && loggedInUserId != result.Value.BloodDonator.User.Id.ToString())
+                {
+                    return BadRequest(Result.Error<DonationModel>("Wypierdalaj").ErrorMessages);
+                }
+            }
+
             var toReturn = Mapper.Map<DonationModel, ReturnDonationDetailsDTO>(result.Value);
 
             return Ok(toReturn);
         }
 
         [HttpGet("{donationId}")]
-        [Authorize(Policy = "Worker")]
+        [Authorize(Policy = "Authenticated")]
         [ProducesResponseType(typeof(ReturnDonationDTO), 200)]
         [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
         public IActionResult GetDonationById([FromRoute]int donationId)
@@ -108,6 +121,18 @@ namespace BloodCenterManagementSystem.Web.Controllers
             if (!result.IsSuccessfull)
             {
                 return BadRequest(result.ErrorMessages);
+            }
+
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+
+            var loggedInUserId = identity.FindFirst("UserId")?.Value;
+            var loggedInUserRole = identity.FindFirst("Role")?.Value;
+            if (!string.IsNullOrEmpty(loggedInUserRole) && loggedInUserRole == "Donator")
+            {
+                if (!string.IsNullOrEmpty(loggedInUserId) && loggedInUserId != result.Value.BloodDonator.User.Id.ToString())
+                {
+                    return BadRequest(Result.Error<DonationModel>("Wypierdalaj").ErrorMessages);
+                }
             }
 
             var toReturn = Mapper.Map<DonationModel, ReturnDonationDTO>(result.Value);
@@ -140,6 +165,7 @@ namespace BloodCenterManagementSystem.Web.Controllers
 
 
         [HttpPatch]
+        [Authorize(Policy ="Worker")]
         [ProducesResponseType(typeof(UpdateDonationStage), 200)]
         [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
         public IActionResult Patch (UpdateDonationStage data)

@@ -1,7 +1,10 @@
 ﻿using AutoMapper;
 using BloodCenterManagementSystem.Logics;
+using BloodCenterManagementSystem.Logics.Filters;
 using BloodCenterManagementSystem.Logics.Interfaces;
 using BloodCenterManagementSystem.Models;
+using BloodCenterManagementSystem.Web.Controllers.DataHolders;
+using BloodCenterManagementSystem.Web.Controllers.Responses;
 using BloodCenterManagementSystem.Web.DTO;
 using BloodCenterManagementSystem.Web.DTO.BloodDonator;
 using BloodCenterManagementSystem.Web.DTO.BloodType;
@@ -11,6 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace BloodCenterManagementSystem.Web.Controllers
@@ -28,6 +32,7 @@ namespace BloodCenterManagementSystem.Web.Controllers
         private readonly Lazy<IDonationLogic> _donationLogic;
         protected IDonationLogic DonationLogic => _donationLogic.Value;
 
+
         public BloodDonatorController(Lazy<IBloodDonatorLogic> bloodDonatorLogic,
             Lazy<IMapper> mapper,
             Lazy<IDonationLogic> donationLogic)
@@ -43,6 +48,18 @@ namespace BloodCenterManagementSystem.Web.Controllers
         [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
         public IActionResult Get([FromRoute]int id)
         {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+
+            var loggedInUserId = identity.FindFirst("UserId")?.Value;
+            var loggedInUserRole = identity.FindFirst("Role")?.Value;
+            if (!string.IsNullOrEmpty(loggedInUserRole) && loggedInUserRole == "Donator")
+            {
+                if (!string.IsNullOrEmpty(loggedInUserId) && loggedInUserId != id.ToString())
+                {
+                    return BadRequest(Result.Error<BloodDonatorModel>("Wypierdalaj").ErrorMessages);
+                }
+            }
+
             var result = BloodDonatorLogic.ReturnDonatorInformation(id);
 
             if (!result.IsSuccessfull)
@@ -58,9 +75,9 @@ namespace BloodCenterManagementSystem.Web.Controllers
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<ReturnDonatorInformationDTO>), 200)]
         [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
-        public IActionResult Get()
+        public IActionResult Get([FromQuery] PaginationQuery paginationQuery,[FromQuery] GetAllBloodDonatorsFilters filters)
         {
-            var result = BloodDonatorLogic.GetAll();
+            var result = BloodDonatorLogic.GetAll(paginationQuery, filters); 
 
             if (!result.IsSuccessfull)
             {
@@ -73,7 +90,21 @@ namespace BloodCenterManagementSystem.Web.Controllers
             {
                 listToReturn.Add(Mapper.Map<BloodDonatorModel,ReturnDonatorInformationDTO>(x));
             }
-            return Ok(listToReturn);
+
+            if(paginationQuery == null || paginationQuery.PageNumber<1 || paginationQuery.PageSize < 1)
+            {
+                return Ok(new PagedResponse<List<ReturnDonatorInformationDTO>>(listToReturn));
+            }
+
+
+            var paginationResponse = new PagedResponse<List<ReturnDonatorInformationDTO>>
+            {
+                Data = listToReturn,
+                PageNumber = paginationQuery.PageNumber >= 1 ? paginationQuery.PageNumber : (int?)null,
+                PageSize = paginationQuery.PageNumber >= 1 ? paginationQuery.PageSize : (int?)null,
+            };
+
+            return Ok(paginationResponse);
         }
 
         [Authorize(Policy = "Worker")]
@@ -102,6 +133,18 @@ namespace BloodCenterManagementSystem.Web.Controllers
         [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
         public IActionResult ReturnDonatorsAllDonations([FromRoute] int userId)
         {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+
+            var loggedInUserId = identity.FindFirst("UserId")?.Value;
+            var loggedInUserRole = identity.FindFirst("Role")?.Value;
+            if (!string.IsNullOrEmpty(loggedInUserRole) && loggedInUserRole == "Donator")
+            {
+                if (!string.IsNullOrEmpty(loggedInUserId) && loggedInUserId != userId.ToString())
+                {
+                    return BadRequest(Result.Error<IEnumerable<DonationModel>>("Wypierdalaj").ErrorMessages);
+                }
+            }
+
             var result = DonationLogic.ReturnAllDonatorDonations(userId);
 
             if (!result.IsSuccessfull)

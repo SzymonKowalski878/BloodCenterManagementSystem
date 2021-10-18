@@ -54,6 +54,18 @@ namespace BloodCenterManagementSystem.Web.Controllers
                 return BadRequest("UpdateUserData was null");
             }
 
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+
+            var loggedInUserId = identity.FindFirst("UserId")?.Value;
+            var loggedInUserRole = identity.FindFirst("Role")?.Value;
+            if (!string.IsNullOrEmpty(loggedInUserRole) && loggedInUserRole == "Donator")
+            {
+                if (!string.IsNullOrEmpty(loggedInUserId) && loggedInUserId != data.Id.ToString())
+                {
+                    return BadRequest(Result.Error<BloodDonatorModel>("Wypierdalaj").ErrorMessages);
+                }
+            }
+
             var result = BloodDonatorLogic.UpdateUserData(data);
 
             if (!result.IsSuccessfull)
