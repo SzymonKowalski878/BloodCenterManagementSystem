@@ -1,5 +1,6 @@
 ﻿using BloodCenterManagementSystem.Logics.BloodDonators.DataHolders;
 using BloodCenterManagementSystem.Logics.Donations.DataHolders;
+using BloodCenterManagementSystem.Logics.Filters;
 using BloodCenterManagementSystem.Logics.Interfaces;
 using BloodCenterManagementSystem.Logics.Repositories;
 using BloodCenterManagementSystem.Logics.Users.DataHolders;
@@ -96,6 +97,7 @@ namespace BloodCenterManagementSystem.Logics.BloodDonators
 
             data.BloodType = null;
             data.BloodTypeId = bloodType.Id;
+            data.User.Role = "Donator";
 
             try
             {
@@ -245,9 +247,25 @@ namespace BloodCenterManagementSystem.Logics.BloodDonators
             return Result.Ok(donator);
         }
 
-        public Result<IEnumerable<BloodDonatorModel>> GetAll()
+        public Result<IEnumerable<BloodDonatorModel>> GetAll(PaginationQuery paginationFilter =null, GetAllBloodDonatorsFilters filters=null)
         {
             var result = BloodDonatorRepository.GetAll();
+
+            if (!string.IsNullOrEmpty(filters.BloodTypeName))
+            {
+                result = result.Where(m => m.BloodType.BloodTypeName == filters.BloodTypeName);
+            }
+
+            if (!string.IsNullOrEmpty(filters.HomeAddress))
+            {
+                result = result.Where(m => m.HomeAdress == filters.HomeAddress);
+            }
+
+            if (paginationFilter != null && paginationFilter.PageSize>0 && paginationFilter.PageSize>0)
+            {
+                var skip = (paginationFilter.PageNumber - 1) * paginationFilter.PageSize;
+                result = BloodDonatorRepository.GetAll().Skip(skip).Take(paginationFilter.PageSize);
+            }
 
             if (result.Count() == 0)
             {

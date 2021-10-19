@@ -4,9 +4,9 @@ using System.Text;
 
 namespace BloodCenterManagementSystem.Logics.Users.DataHolders
 {
-    public class UserIdAndPassword
+    public class UserEmailAndPassword
     {
-        public int Id { get; set; }
+        public string Email { get; set; }
         public string Password { get; set; }
     }
 }

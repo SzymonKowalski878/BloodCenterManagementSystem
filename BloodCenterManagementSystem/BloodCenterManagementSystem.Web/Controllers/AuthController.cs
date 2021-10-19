@@ -2,8 +2,10 @@
 using BloodCenterManagementSystem.Logics.Interfaces;
 using BloodCenterManagementSystem.Logics.Users.DataHolders;
 using BloodCenterManagementSystem.Models;
+using BloodCenterManagementSystem.Web.Controllers.DataHolders;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,7 +40,7 @@ namespace BloodCenterManagementSystem.Web.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(UserToken), 200)]
         [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
-        public IActionResult Post(UserIdAndPassword data)
+        public IActionResult Post(UserEmailAndPassword data)
         {
             var result = UserLogic.Login(data);
 
@@ -53,14 +55,14 @@ namespace BloodCenterManagementSystem.Web.Controllers
         [HttpPost("sendmail")]
         [ProducesResponseType(typeof(string), 200)]
         [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
-        public IActionResult SendMail([FromQuery] string email,[FromQuery] string route)
+        public IActionResult SendMail([FromBody] SendMailHolder data)
         {
-            if (email == null)
+            if (data.Email == null)
             {
-                email = "";
+                data.Email = "";
             }
 
-            var code = EmailConfirmationService.GenerateUserConfirmationToken(email);
+            var code = EmailConfirmationService.GenerateUserConfirmationToken(data.Email);
 
             if (!code.IsSuccessfull)
             {
@@ -69,18 +71,18 @@ namespace BloodCenterManagementSystem.Web.Controllers
 
             string link;
 
-            if (!string.IsNullOrEmpty(route))
+            if (!string.IsNullOrEmpty(data.Route))
             {
-                link = route + "?userEmail=" + email + "&code" + code.Value.Token;
+                link = data.Route + "?userEmail=" + data.Email + "&code" + code.Value.Token;
                 link = HttpUtility.UrlEncode(link);
             }
             else
             {
-                link = Url.Action(nameof(VerifyEmail), "Auth", new { userEmail = email, code = code.Value.Token }, Request.Scheme, Request.Host.ToString());
-
+                //link = Url.Action(nameof(VerifyEmail), "Auth", new { userEmail = email, code = code.Value.Token }, Request.Scheme, Request.Host.ToString());
+                link = "http://localhost:4200/setpassword" + "?userEmail=" + data.Email + "&code=" + code.Value.Token;
             }
 
-            var messageToSend = new MessageModel(new List<string> { email }, "Blood bank email confirmation", link, null);
+            var messageToSend = new MessageModel(new List<string> { data.Email }, "Blood bank email confirmation", link, null);
 
             var result = EmailSender.SendEmail(messageToSend);
 
@@ -89,29 +91,29 @@ namespace BloodCenterManagementSystem.Web.Controllers
                 return BadRequest(result.ErrorMessages);
             }
 
-            return Ok(link);
+            return Ok(new { status = "ok" });
         }
 
         [HttpPost("verifyemail")]
-        [ProducesResponseType(typeof(string), 200)]
+        [ProducesResponseType(typeof(ReturnOk), 200)]
         [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
-        public IActionResult VerifyEmail(string userEmail, string code, string password)
+        public IActionResult VerifyEmail([FromBody] VerifyEmailParams data)
         {
-            var verificationResult = EmailConfirmationService.ValidateConfirmationToken(code);
+            var verificationResult = EmailConfirmationService.ValidateConfirmationToken(data.Code);
 
             if (!verificationResult.IsSuccessfull)
             {
                 return BadRequest(verificationResult.ErrorMessages);
             }
 
-            var result = UserLogic.RegisterAccount(userEmail, code, password);
+            var result = UserLogic.RegisterAccount(data.UserEmail, data.Code, data.Password);
 
             if (!result.IsSuccessfull)
             {
-                BadRequest(result.ErrorMessages);
+                return BadRequest(result.ErrorMessages);
             }
 
-            return Ok(userEmail);
+            return Ok(new { status = "ok" });
         }
 
         [HttpPost, Route("regeneratetoken")]
@@ -121,14 +123,17 @@ namespace BloodCenterManagementSystem.Web.Controllers
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
 
-            var loggedInUser = identity.FindFirst(ClaimTypes.Name)?.Value;
+            var loggedInUser = identity.FindFirst(ClaimTypes.Email)?.Value;
 
             if (loggedInUser == null)
             {
-                return BadRequest("Unable to extract id from header");
+                return BadRequest(new ErrorMessage()
+                {
+                    Message = "Unable to extract email from header"
+                });
             }
 
-            var result = UserLogic.RenewToken(Int32.Parse(loggedInUser));
+            var result = UserLogic.RenewToken(loggedInUser);
 
             if (!result.IsSuccessfull)
             {
@@ -139,18 +144,18 @@ namespace BloodCenterManagementSystem.Web.Controllers
         }
 
         [HttpPost("verifycode")]
-        [ProducesResponseType(typeof(string), 200)]
+        [ProducesResponseType(typeof(ReturnOk), 200)]
         [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
-        public IActionResult VerifyCode([FromQuery] string code)
+        public IActionResult VerifyCode([FromBody] VerifyCodeParams codeParams)
         {
-            var verificationResult = EmailConfirmationService.ValidateConfirmationToken(code);
+            var verificationResult = EmailConfirmationService.ValidateConfirmationToken(codeParams.Code);
 
             if (!verificationResult.IsSuccessfull)
             {
                 return BadRequest(verificationResult.ErrorMessages);
             }
 
-            return Ok(code);
+            return Ok(new ReturnOk() { Status="ok" });
         }
     }
 }

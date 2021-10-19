@@ -25,5 +25,10 @@ namespace BloodCenterManagementSystem.DataAccess
         {
             return DataContext.BloodDonators.Include(m => m.User).Include(m => m.BloodType).FirstOrDefault(m => m.Pesel == pesel);
         }
+
+        public override IEnumerable<BloodDonatorModel> GetAll()
+        {
+            return DataContext.BloodDonators.Include(m=>m.BloodType);
+        }
     }
 }

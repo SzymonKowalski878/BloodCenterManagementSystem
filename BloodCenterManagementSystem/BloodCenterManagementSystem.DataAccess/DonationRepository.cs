@@ -28,7 +28,7 @@ namespace BloodCenterManagementSystem.DataAccess
 
         public DonationModel ReturnDonationDetails(int donationId)
         {
-            return DataContext.Donations.Include(m => m.ResultOfExamination).FirstOrDefault(m => m.Id == donationId);
+            return DataContext.Donations.Include(m => m.ResultOfExamination).Include(m=>m.BloodDonator.User).FirstOrDefault(m => m.Id == donationId);
         }
 
         public override DonationModel GetById(int id)
