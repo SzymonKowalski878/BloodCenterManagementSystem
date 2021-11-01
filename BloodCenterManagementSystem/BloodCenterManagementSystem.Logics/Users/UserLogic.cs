@@ -176,9 +176,13 @@ namespace BloodCenterManagementSystem.Logics.Users
             user.Password = hashedPassword;
             user.EmailConfirmed = true;
             user.Role = "Donator";
-
-            UserRepository.SaveChanges();
-
+            try { 
+                UserRepository.SaveChanges();
+            }
+            catch(UniqueConstraintException ex)
+            {
+                return Result.Error<string>(ex.Message);
+            }
             return Result.Ok(email);
         }
     }

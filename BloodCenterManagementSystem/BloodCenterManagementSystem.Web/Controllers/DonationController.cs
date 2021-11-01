@@ -32,7 +32,7 @@ namespace BloodCenterManagementSystem.Web.Controllers
             _mapper = mapper;
         }
       
-        [HttpPost]
+        [HttpPost("{userId}")]
         [Authorize(Policy = "Worker")]
         [ProducesResponseType(typeof(ReturnDonationDTO), 200)]
         [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
