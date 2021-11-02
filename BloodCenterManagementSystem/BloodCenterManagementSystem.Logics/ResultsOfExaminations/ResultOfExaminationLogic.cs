@@ -42,8 +42,15 @@ namespace BloodCenterManagementSystem.Logics.ResultsOfExaminations
                 return Result.Error<ResultOfExaminationModel>("Result already exists");
             }
 
-            donation.ResultOfExamination = examination;
-            DonationRepository.SaveChanges();
+            try
+            {
+                donation.ResultOfExamination = examination;
+                DonationRepository.SaveChanges();
+            }
+            catch(Exception ex)
+            {
+                return Result.Error<ResultOfExaminationModel>(ex.Message);
+            }
 
             return Result.Ok(examination);
         }
@@ -67,7 +74,14 @@ namespace BloodCenterManagementSystem.Logics.ResultsOfExaminations
             resultOfExamination.Height = examination.Height;
             resultOfExamination.Weight = examination.Weight;
 
-            ResultOfExaminationRepository.SaveChanges();
+            try
+            {
+                ResultOfExaminationRepository.SaveChanges();
+            }
+            catch(Exception ex)
+            {
+                return Result.Error<ResultOfExaminationModel>(ex.Message);
+            }
 
             return Result.Ok(examination);
         }

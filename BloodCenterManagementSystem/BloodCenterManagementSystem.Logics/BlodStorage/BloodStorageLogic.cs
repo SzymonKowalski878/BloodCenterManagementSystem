@@ -77,8 +77,15 @@ namespace BloodCenterManagementSystem.Logics.BlodStorage
             donation.BloodDonator.AmmountOfBloodDonated += 450;
             donation.Stage = "donation finished";
 
-            BloodStorageRepository.Add(unit);
-            BloodStorageRepository.SaveChanges();
+            try
+            {
+                BloodStorageRepository.Add(unit);
+                BloodStorageRepository.SaveChanges();
+            }
+            catch(Exception ex)
+            {
+                return Result.Error<BloodStorageModel>(ex.Message);
+            }
 
             return Result.Ok(unit);
         }
@@ -115,8 +122,15 @@ namespace BloodCenterManagementSystem.Logics.BlodStorage
 
             bloodType.AmmountOfBloodInBank += 450;
 
-            BloodStorageRepository.Add(unit);
-            BloodStorageRepository.SaveChanges();
+            try
+            {
+                BloodStorageRepository.Add(unit);
+                BloodStorageRepository.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                return Result.Error<BloodStorageModel>(ex.Message);
+            }
 
             return Result.Ok(unit);
         }
@@ -149,7 +163,14 @@ namespace BloodCenterManagementSystem.Logics.BlodStorage
 
             bloodType.AmmountOfBloodInBank -= 450;
 
-            BloodStorageRepository.SaveChanges();
+            try
+            {
+                BloodStorageRepository.SaveChanges();
+            }
+            catch(Exception ex)
+            {
+                return Result.Error<BloodStorageModel>(ex.Message);
+            }
 
             return Result.Ok(unit);
         }
