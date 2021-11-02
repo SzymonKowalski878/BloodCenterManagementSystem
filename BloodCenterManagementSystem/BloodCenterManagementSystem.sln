@@ -3,13 +3,18 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30611.23
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BloodCenterManagementSystem.Web", "BloodCenterManagementSystem.Web\BloodCenterManagementSystem.Web.csproj", "{D1444242-9037-4182-946B-096C33D5F4B5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BloodCenterManagementSystem.Web", "BloodCenterManagementSystem.Web\BloodCenterManagementSystem.Web.csproj", "{D1444242-9037-4182-946B-096C33D5F4B5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BloodCenterManagementSystem.DataAccess", "BloodCenterManagementSystem.DataAccess\BloodCenterManagementSystem.DataAccess.csproj", "{25E63F97-AC1D-4A9D-B27D-29CC3319FD0F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BloodCenterManagementSystem.DataAccess", "BloodCenterManagementSystem.DataAccess\BloodCenterManagementSystem.DataAccess.csproj", "{25E63F97-AC1D-4A9D-B27D-29CC3319FD0F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BloodCenterManagementSystem.Models", "BloodCenterManagementSystem.Models\BloodCenterManagementSystem.Models.csproj", "{F1BED291-5BF6-4A36-B68F-D99DE2D73CF7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BloodCenterManagementSystem.Models", "BloodCenterManagementSystem.Models\BloodCenterManagementSystem.Models.csproj", "{F1BED291-5BF6-4A36-B68F-D99DE2D73CF7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BloodCenterManagementSystem.Logics", "BloodCenterManagementSystem.Logics\BloodCenterManagementSystem.Logics.csproj", "{B0C518A6-B9A7-4836-954C-41225B9C5AB0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BloodCenterManagementSystem.Logics", "BloodCenterManagementSystem.Logics\BloodCenterManagementSystem.Logics.csproj", "{B0C518A6-B9A7-4836-954C-41225B9C5AB0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BloodCenterManagementSystem.Tests", "BloodCenterManagementSystem.Tests\BloodCenterManagementSystem.Tests.csproj", "{433EAE5F-076A-4CA7-BA64-2D840F76D4A6}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D1444242-9037-4182-946B-096C33D5F4B5} = {D1444242-9037-4182-946B-096C33D5F4B5}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +38,10 @@ Global
 		{B0C518A6-B9A7-4836-954C-41225B9C5AB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B0C518A6-B9A7-4836-954C-41225B9C5AB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B0C518A6-B9A7-4836-954C-41225B9C5AB0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{433EAE5F-076A-4CA7-BA64-2D840F76D4A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{433EAE5F-076A-4CA7-BA64-2D840F76D4A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{433EAE5F-076A-4CA7-BA64-2D840F76D4A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{433EAE5F-076A-4CA7-BA64-2D840F76D4A6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -28,7 +28,7 @@ namespace BloodCenterManagementSystem.DataAccess
 
         public override IEnumerable<BloodDonatorModel> GetAll()
         {
-            return DataContext.BloodDonators.Include(m=>m.BloodType);
+            return DataContext.BloodDonators.Include(m=>m.BloodType).Include(m=>m.User);
         }
     }
 }

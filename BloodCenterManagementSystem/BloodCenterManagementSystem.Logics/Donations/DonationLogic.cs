@@ -49,10 +49,15 @@ namespace BloodCenterManagementSystem.Logics.Donations
                 RejectionReason = null
             };
 
-            DonationRepository.Add(donation);
-            DonationRepository.SaveChanges();
-
-            
+            try
+            {
+                DonationRepository.Add(donation);
+                DonationRepository.SaveChanges();
+            }
+            catch(Exception ex)
+            {
+                return Result.Error<DonationModel>(ex.Message);
+            }
 
             return Result.Ok(donation);
         }
@@ -118,8 +123,17 @@ namespace BloodCenterManagementSystem.Logics.Donations
                 donation.RejectionReason = data.RejectionReason;
             }
 
-            donation.Stage = data.Stage;
-            DonationRepository.SaveChanges();
+
+            try
+            {
+
+                donation.Stage = data.Stage;
+                DonationRepository.SaveChanges();
+            }
+            catch(Exception ex)
+            {
+                return Result.Error<DonationModel>(ex.Message);
+            }
 
             return Result.Ok(donation);
         }

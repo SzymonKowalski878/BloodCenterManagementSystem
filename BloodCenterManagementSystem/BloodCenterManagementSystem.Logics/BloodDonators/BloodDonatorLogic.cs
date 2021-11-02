@@ -185,8 +185,16 @@ namespace BloodCenterManagementSystem.Logics.BloodDonators
                     return Result.Error<BloodDonatorModel>("Error during password hashing");
                 }
 
-                toUpdate.User.Password = hashedPassword;
-                BloodDonatorRepository.SaveChanges();
+                try
+                {
+
+                    toUpdate.User.Password = hashedPassword;
+                    BloodDonatorRepository.SaveChanges();
+                }
+                catch(Exception ex)
+                {
+                    return Result.Error<BloodDonatorModel>(ex.Message);
+                }
             }
 
             var donator = new BloodDonatorModel
@@ -207,8 +215,15 @@ namespace BloodCenterManagementSystem.Logics.BloodDonators
                     return Result.Error<BloodDonatorModel>(homeAdressValidation.Errors);
                 }
 
-                toUpdate.HomeAdress = donator.HomeAdress;
-                BloodDonatorRepository.SaveChanges();
+                try
+                {
+                    toUpdate.HomeAdress = donator.HomeAdress;
+                    BloodDonatorRepository.SaveChanges();
+                }
+                catch(Exception ex)
+                {
+                    return Result.Error<BloodDonatorModel>(ex.Message);
+                }
             }
 
             if (!string.IsNullOrEmpty(data.PhoneNumber))
@@ -223,8 +238,16 @@ namespace BloodCenterManagementSystem.Logics.BloodDonators
                     return Result.Error<BloodDonatorModel>(phoneNumberValidation.Errors);
                 }
 
-                toUpdate.PhoneNumber = donator.PhoneNumber;
-                BloodDonatorRepository.SaveChanges();
+                try
+                {
+                    toUpdate.PhoneNumber = donator.PhoneNumber;
+                    BloodDonatorRepository.SaveChanges();
+                }
+                catch(Exception ex)
+                {
+                    return Result.Error<BloodDonatorModel>(ex.Message);
+                }
+
             }
 
             return Result.Ok(toUpdate);

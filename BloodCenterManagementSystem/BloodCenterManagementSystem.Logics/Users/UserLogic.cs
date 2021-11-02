@@ -79,6 +79,7 @@ namespace BloodCenterManagementSystem.Logics.Users
             }
 
             var token = AuthService.GenerateToken(user.Email, user.Role,user.Id);
+
             if (token == null)
             {
                 return Result.Error<UserToken>("Error during token generation");
@@ -177,7 +178,14 @@ namespace BloodCenterManagementSystem.Logics.Users
             user.EmailConfirmed = true;
             user.Role = "Donator";
 
-            UserRepository.SaveChanges();
+            try 
+            { 
+                UserRepository.SaveChanges();
+            }
+            catch(UniqueConstraintException ex)
+            {
+                return Result.Error<string>(ex.Message);
+            }
 
             return Result.Ok(email);
         }
