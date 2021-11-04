@@ -270,29 +270,13 @@ namespace BloodCenterManagementSystem.Logics.BloodDonators
             return Result.Ok(donator);
         }
 
-        public Result<IEnumerable<BloodDonatorModel>> GetAll(PaginationQuery paginationFilter =null, GetAllBloodDonatorsFilters filters=null)
+        public Result<IEnumerable<BloodDonatorModel>> GetAll()
         {
             var result = BloodDonatorRepository.GetAll();
 
-            if (!string.IsNullOrEmpty(filters.BloodTypeName))
+            if (result.Count() < 1)
             {
-                result = result.Where(m => m.BloodType.BloodTypeName == filters.BloodTypeName);
-            }
-
-            if (!string.IsNullOrEmpty(filters.HomeAddress))
-            {
-                result = result.Where(m => m.HomeAdress == filters.HomeAddress);
-            }
-
-            if (paginationFilter != null && paginationFilter.PageSize>0 && paginationFilter.PageSize>0)
-            {
-                var skip = (paginationFilter.PageNumber - 1) * paginationFilter.PageSize;
-                result = BloodDonatorRepository.GetAll().Skip(skip).Take(paginationFilter.PageSize);
-            }
-
-            if (result.Count() == 0)
-            {
-                return Result.Error<IEnumerable<BloodDonatorModel>>("No users found");
+                return Result.Error<IEnumerable<BloodDonatorModel>>("Unable to find any donator");
             }
 
             return Result.Ok(result);
