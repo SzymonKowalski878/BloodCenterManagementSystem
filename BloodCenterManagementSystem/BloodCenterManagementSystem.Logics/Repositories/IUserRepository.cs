@@ -9,5 +9,7 @@ namespace BloodCenterManagementSystem.Logics.Repositories
     {
         UserModel GetByEmail(string email);
         string GetUserPassword(string  email);
+        IEnumerable<UserModel> ReturnAllWorkers();
+        void Delete(UserModel data);
     }
 }

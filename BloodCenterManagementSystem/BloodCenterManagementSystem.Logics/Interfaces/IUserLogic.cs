@@ -11,6 +11,9 @@ namespace BloodCenterManagementSystem.Logics.Interfaces
         Result<string> RegisterAccount(string email, string authToken, string password);
         Result<UserToken> Login(UserEmailAndPassword data);
         Result<UserToken> RenewToken(string email);
-        Result<UserModel> RegisterWokrer(UserModel data);
+        Result<UserModel> RegisterWokrer(UserModel data,string role);
+        Result<UserModel> DeleteAccount(int id);
+        Result<IEnumerable<UserModel>> ReturnAllWorkers();
+        Result<UserModel> ReturnWorkerById(int id);
     }
 }

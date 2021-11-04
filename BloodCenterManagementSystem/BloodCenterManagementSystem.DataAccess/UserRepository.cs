@@ -31,5 +31,15 @@ namespace BloodCenterManagementSystem.DataAccess
         {
             return DataContext.Users.FirstOrDefault(m => m.Id == id);
         }
+
+        public IEnumerable<UserModel> ReturnAllWorkers()
+        {
+            return DataContext.Users.Where(m => m.Role == "Worker" || m.Role == "Admin");
+        }
+
+        public void Delete(UserModel data)
+        {
+            DataContext.Remove(data);
+        }
     }
 }
