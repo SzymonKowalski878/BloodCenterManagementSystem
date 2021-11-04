@@ -4,6 +4,7 @@ using BloodCenterManagementSystem.Logics.BlodStorage.DataHolders;
 using BloodCenterManagementSystem.Logics.Donations.DataHolders;
 using BloodCenterManagementSystem.Logics.Interfaces;
 using BloodCenterManagementSystem.Models;
+using BloodCenterManagementSystem.Web.Controllers.DataHolders;
 using BloodCenterManagementSystem.Web.DTO.BloodStorage;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -33,7 +34,7 @@ namespace BloodCenterManagementSystem.Web.Controllers
 
         [HttpPost]
         [Authorize(Policy = "Worker")]
-        [ProducesResponseType(typeof(ReturnAddedUnitDTO), 200)]
+        [ProducesResponseType(typeof(ReturnOk), 200)]
         [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
         public IActionResult Post(AddBloodUnitToStorage data)
         {
@@ -44,14 +45,14 @@ namespace BloodCenterManagementSystem.Web.Controllers
                 return BadRequest(result.ErrorMessages);
             }
 
-            var toReturn = Mapper.Map<BloodStorageModel, ReturnAddedUnitDTO>(result.Value);
+            var toReturn = Mapper.Map<BloodStorageModel, ReturnBloodUnitInStorage>(result.Value);
 
-            return Ok(toReturn);
+            return Ok(new ReturnOk { Status = "ok" });
         }
 
         [HttpPost("foreign")]
         [Authorize(Policy = "Worker")]
-        [ProducesResponseType(typeof(ReturnAddedUnitDTO), 200)]
+        [ProducesResponseType(typeof(ReturnOk), 200)]
         [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
         public IActionResult AddForeingBloodUnitToStorage(AddForeignBloodUnitToStorage data)
         {
@@ -62,14 +63,14 @@ namespace BloodCenterManagementSystem.Web.Controllers
                 return BadRequest(result.ErrorMessages);
             }
 
-            var toReturn = Mapper.Map<BloodStorageModel, ReturnAddedUnitDTO>(result.Value);
+            var toReturn = Mapper.Map<BloodStorageModel, ReturnBloodUnitInStorage>(result.Value);
 
-            return Ok(toReturn);
+            return Ok(new ReturnOk { Status = "ok" });
         }
 
         [HttpPatch("{bloodUnitId}")]
         [Authorize(Policy = "Worker")]
-        [ProducesResponseType(typeof(ReturnAddedUnitDTO), 200)]
+        [ProducesResponseType(typeof(ReturnOk), 200)]
         [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
         public IActionResult Patch(int bloodUnitId)
         {
@@ -80,14 +81,14 @@ namespace BloodCenterManagementSystem.Web.Controllers
                 return BadRequest(result.ErrorMessages);
             }
 
-            var toReturn = Mapper.Map<BloodStorageModel, ReturnAddedUnitDTO>(result.Value);
+            var toReturn = Mapper.Map<BloodStorageModel, ReturnBloodUnitInStorage>(result.Value);
 
-            return Ok(toReturn);
+            return Ok(new ReturnOk { Status = "ok" });
         }
 
         [Authorize(Policy = "Worker")]
         [HttpGet]
-        [ProducesResponseType(typeof(List<ReturnAddedUnitDTO>), 200)]
+        [ProducesResponseType(typeof(List<ReturnBloodUnitInStorage>), 200)]
         [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
         public IActionResult ReturnAllAvailableBloodUnits()
         {
@@ -98,11 +99,11 @@ namespace BloodCenterManagementSystem.Web.Controllers
                 return BadRequest(result.ErrorMessages);
             }
 
-            var list = new List<ReturnAddedUnitDTO>();
+            var list = new List<ReturnBloodUnitInStorage>();
 
             foreach (var x in result.Value)
             {
-                list.Add(Mapper.Map<BloodStorageModel, ReturnAddedUnitDTO>(x));
+                list.Add(Mapper.Map<BloodStorageModel, ReturnBloodUnitInStorage>(x));
             }
 
             return Ok(list);

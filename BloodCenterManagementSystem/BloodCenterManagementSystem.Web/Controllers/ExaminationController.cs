@@ -2,6 +2,7 @@
 using BloodCenterManagementSystem.Logics;
 using BloodCenterManagementSystem.Logics.Interfaces;
 using BloodCenterManagementSystem.Models;
+using BloodCenterManagementSystem.Web.Controllers.DataHolders;
 using BloodCenterManagementSystem.Web.DTO.ResultOfExamination;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -31,7 +32,7 @@ namespace BloodCenterManagementSystem.Web.Controllers
 
         [HttpPost]
         [Authorize(Policy = "Worker")]
-        [ProducesResponseType(typeof(AddResultOfExaminationDTO), 200)]
+        [ProducesResponseType(typeof(ReturnOk), 200)]
         [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
         public IActionResult Post(AddResultOfExaminationDTO data)
         {
@@ -44,12 +45,12 @@ namespace BloodCenterManagementSystem.Web.Controllers
                 return BadRequest(result.ErrorMessages);
             }
 
-            return Ok(data);
+            return Ok(new ReturnOk { Status = "ok" });
         }
 
         [HttpPatch]
         [Authorize(Policy = "Worker")]
-        [ProducesResponseType(typeof(UpdateResultOfExaminationDTO), 200)]
+        [ProducesResponseType(typeof(ReturnOk), 200)]
         [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
         public IActionResult Patch(UpdateResultOfExaminationDTO data)
         {
@@ -62,7 +63,26 @@ namespace BloodCenterManagementSystem.Web.Controllers
                 return BadRequest(result.ErrorMessages);
             }
 
-            return Ok(data);
+            return Ok(new ReturnOk { Status = "ok" });
         }
+
+        [HttpPatch("fixbloodexamination")]
+        [Authorize(Policy = "Worker")]
+        [ProducesResponseType(typeof(ReturnOk), 200)]
+        [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
+        public IActionResult FxiBloodExamination(FixResultOfBloodExminationDTO data)
+        {
+            var dataToUpdate = Mapper.Map<FixResultOfBloodExminationDTO, ResultOfExaminationModel>(data);
+
+            var result = ResultOfExaminationLogic.UpdateBloodExaminationResult(dataToUpdate);
+
+            if (!result.IsSuccessfull)
+            {
+                return BadRequest(result.ErrorMessages);
+            }
+
+            return Ok(new ReturnOk { Status = "ok" });
+        }
+
     }
 }

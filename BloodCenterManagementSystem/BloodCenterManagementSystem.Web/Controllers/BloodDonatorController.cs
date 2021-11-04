@@ -73,43 +73,30 @@ namespace BloodCenterManagementSystem.Web.Controllers
 
         [Authorize(Policy = "Worker")]
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<ReturnDonatorInformationDTO>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<ReturnDonatorShortDTO>), 200)]
         [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
-        public IActionResult Get([FromQuery] PaginationQuery paginationQuery,[FromQuery] GetAllBloodDonatorsFilters filters)
+        public IActionResult Get()
         {
-            var result = BloodDonatorLogic.GetAll(paginationQuery, filters); 
+            var result = BloodDonatorLogic.GetAll(); 
 
             if (!result.IsSuccessfull)
             {
                 return BadRequest(result.ErrorMessages);
             }
 
-            var listToReturn = new List<ReturnDonatorInformationDTO>();
+            var listToReturn = new List<ReturnDonatorShortDTO>();
 
             foreach(var x in result.Value)
             {
-                listToReturn.Add(Mapper.Map<BloodDonatorModel,ReturnDonatorInformationDTO>(x));
+                listToReturn.Add(Mapper.Map<BloodDonatorModel,ReturnDonatorShortDTO>(x));
             }
 
-            if(paginationQuery == null || paginationQuery.PageNumber<1 || paginationQuery.PageSize < 1)
-            {
-                return Ok(new PagedResponse<List<ReturnDonatorInformationDTO>>(listToReturn));
-            }
-
-
-            var paginationResponse = new PagedResponse<List<ReturnDonatorInformationDTO>>
-            {
-                Data = listToReturn,
-                PageNumber = paginationQuery.PageNumber >= 1 ? paginationQuery.PageNumber : (int?)null,
-                PageSize = paginationQuery.PageNumber >= 1 ? paginationQuery.PageSize : (int?)null,
-            };
-
-            return Ok(paginationResponse);
+            return Ok(listToReturn);
         }
 
         [Authorize(Policy = "Worker")]
         [HttpPost]
-        [ProducesResponseType(typeof(ReturnDonatorInformationDTO), 200)]
+        [ProducesResponseType(typeof(ReturnOk), 200)]
         [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
         public IActionResult Post(AddBloodDonatorDTO data)
         {
@@ -122,9 +109,7 @@ namespace BloodCenterManagementSystem.Web.Controllers
                 return BadRequest(result.ErrorMessages);
             }
 
-            var donatorToReturn = Mapper.Map<BloodDonatorModel, ReturnDonatorInformationDTO>(result.Value);
-
-            return Ok(donatorToReturn);
+            return Ok(new ReturnOk { Status = "ok" });
         }
 
         [Authorize(Policy = "Authenticated")]

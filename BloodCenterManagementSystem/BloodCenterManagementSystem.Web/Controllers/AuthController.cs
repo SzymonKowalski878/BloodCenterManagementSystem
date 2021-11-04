@@ -53,7 +53,7 @@ namespace BloodCenterManagementSystem.Web.Controllers
         }
 
         [HttpPost("sendmail")]
-        [ProducesResponseType(typeof(string), 200)]
+        [ProducesResponseType(typeof(ReturnOk), 200)]
         [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
         public IActionResult SendMail([FromBody] SendMailHolder data)
         {
@@ -91,7 +91,7 @@ namespace BloodCenterManagementSystem.Web.Controllers
                 return BadRequest(result.ErrorMessages);
             }
 
-            return Ok(new { status = "ok" });
+            return Ok(new ReturnOk { Status = "ok" });
         }
 
         [HttpPost("verifyemail")]
@@ -113,7 +113,7 @@ namespace BloodCenterManagementSystem.Web.Controllers
                 return BadRequest(result.ErrorMessages);
             }
 
-            return Ok(new { status = "ok" });
+            return Ok(new ReturnOk { Status = "ok" });
         }
 
         [HttpPost, Route("regeneratetoken")]
@@ -155,7 +155,7 @@ namespace BloodCenterManagementSystem.Web.Controllers
                 return BadRequest(verificationResult.ErrorMessages);
             }
 
-            return Ok(new ReturnOk() { Status="ok" });
+            return Ok(new ReturnOk { Status = "ok" });
         }
     }
 }

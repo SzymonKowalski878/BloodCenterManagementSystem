@@ -88,7 +88,7 @@ namespace BloodCenterManagementSystem.Logics.Users
             return Result.Ok(token);
         }
 
-        public Result<UserModel> RegisterWokrer(UserModel data)
+        public Result<UserModel> RegisterWokrer(UserModel data, string role)
         {
             if (data == null)
             {
@@ -114,7 +114,7 @@ namespace BloodCenterManagementSystem.Logics.Users
 
             data.Password = hashedPassword;
             data.EmailConfirmed = true;
-            data.Role = "Worker";
+            data.Role = role;
 
             try
             {
@@ -188,6 +188,62 @@ namespace BloodCenterManagementSystem.Logics.Users
             }
 
             return Result.Ok(email);
+        }
+
+        public Result<UserModel> DeleteAccount(int id)
+        {
+            var user = UserRepository.GetById(id);
+
+            if (user == null)
+            {
+                return Result.Error<UserModel>("Unable to find worker with such id");
+            }
+
+            if(!(user.Role=="Worker" || user.Role == "Admin"))
+            {
+                return Result.Error<UserModel>("Not allowed to delete account other than worker or admin account");
+            }
+
+            try
+            {
+                UserRepository.Delete(user);
+                UserRepository.SaveChanges();
+            }
+            catch(Exception ex)
+            {
+                return Result.Error<UserModel>(ex.Message);
+            }
+
+            return Result.Ok(user);
+        }
+
+        public Result<IEnumerable<UserModel>> ReturnAllWorkers()
+        {
+            var result = UserRepository.ReturnAllWorkers();
+
+            if (result.Count() < 1)
+            {
+                return Result.Error<IEnumerable<UserModel>>("Unable to find any workers");
+            }
+
+            return Result.Ok(result);
+        }
+
+        public Result<UserModel> ReturnWorkerById(int id)
+        {
+            var user = UserRepository.GetById(id);
+
+            if (user == null)
+            {
+                return Result.Error<UserModel>("Unable to find user with such id");
+            }
+
+            if(!(user.Role == "Worker" || user.Role == "Admin"))
+            {
+                return Result.Error<UserModel>("This endpoint returns only workers and admins");
+            }
+
+            return Result.Ok(user);
         }
     }
 }

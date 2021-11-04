@@ -85,5 +85,44 @@ namespace BloodCenterManagementSystem.Logics.ResultsOfExaminations
 
             return Result.Ok(examination);
         }
+
+        public Result<ResultOfExaminationModel> UpdateBloodExaminationResult(ResultOfExaminationModel examination)
+        {
+            if (examination == null)
+            {
+                return Result.Error<ResultOfExaminationModel>("IdHolder containing donation id was null");
+            }
+
+            var donation = DonationRepository.GetById(examination.DonationId);
+
+            if (donation == null)
+            {
+                return Result.Error<ResultOfExaminationModel>("Unable to find donation with passed id");
+            }
+
+            donation.ResultOfExamination.HB = examination.HB;
+            donation.ResultOfExamination.HT = examination.HT;
+            donation.ResultOfExamination.RBC = examination.RBC;
+            donation.ResultOfExamination.WBC = examination.WBC;
+            donation.ResultOfExamination.PLT = examination.PLT;
+            donation.ResultOfExamination.MCH = examination.MCH;
+            donation.ResultOfExamination.MCHC = examination.MCHC;
+            donation.ResultOfExamination.MCV = examination.MCV;
+            donation.ResultOfExamination.NE = examination.NE;
+            donation.ResultOfExamination.EO = examination.EO;
+            donation.ResultOfExamination.BA = examination.LY;
+            donation.ResultOfExamination.MO = examination.MO;
+
+            try
+            {
+                ResultOfExaminationRepository.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                return Result.Error<ResultOfExaminationModel>(ex.Message);
+            }
+
+            return Result.Ok(examination);
+        }
     }
 }

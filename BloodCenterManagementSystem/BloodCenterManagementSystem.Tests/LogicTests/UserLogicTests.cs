@@ -266,7 +266,7 @@ namespace BloodCenterManagementSystem.Tests.LogicTests
             //Arrange
             UserModel data = null;
             //Act
-            var result = Logic.RegisterWokrer(data);
+            var result = Logic.RegisterWokrer(data,"Worker");
 
             //Assert
             Assert.False(result.IsSuccessfull);
@@ -290,7 +290,7 @@ namespace BloodCenterManagementSystem.Tests.LogicTests
                 .Returns(false);
 
             //Act
-            var result = Logic.RegisterWokrer(user);
+            var result = Logic.RegisterWokrer(user, "Worker");
 
             //Assert
             Assert.False(result.IsSuccessfull);
@@ -317,7 +317,7 @@ namespace BloodCenterManagementSystem.Tests.LogicTests
                 .Returns("");
 
             //Act
-            var result = Logic.RegisterWokrer(user);
+            var result = Logic.RegisterWokrer(user,"Worker");
 
             //Assert
             Assert.False(result.IsSuccessfull);
@@ -334,7 +334,8 @@ namespace BloodCenterManagementSystem.Tests.LogicTests
                 Password = "zaq1WSX",
                 Email = "worker@wp.pl",
                 FirstName = "Admin",
-                Surname = "Admin"
+                Surname = "Admin",
+                Role="Worker"
             };
 
             Validator.Setup(x => x.Validate(It.IsAny<ValidationContext<UserModel>>()).IsValid)
@@ -344,7 +345,7 @@ namespace BloodCenterManagementSystem.Tests.LogicTests
                 .Returns((string)null);
 
             //Act
-            var result = Logic.RegisterWokrer(user);
+            var result = Logic.RegisterWokrer(user,"Worker");
 
             //Assert
             Assert.False(result.IsSuccessfull);
@@ -376,7 +377,7 @@ namespace BloodCenterManagementSystem.Tests.LogicTests
                 }));
 
             //Act
-            var result = Logic.RegisterWokrer(user);
+            var result = Logic.RegisterWokrer(user, "Worker");
 
             //Assert
             
@@ -407,7 +408,7 @@ namespace BloodCenterManagementSystem.Tests.LogicTests
             Repository.Setup(x => x.SaveChanges());
 
             //Act
-            var result = Logic.RegisterWokrer(user);
+            var result = Logic.RegisterWokrer(user,"Worker");
 
             //Assert
 

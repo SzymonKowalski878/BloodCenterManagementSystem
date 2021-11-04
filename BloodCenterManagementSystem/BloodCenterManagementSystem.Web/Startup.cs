@@ -105,6 +105,14 @@ namespace BloodCenterManagementSystem.Web
                      .Build();
                  });
 
+                x.AddPolicy("Admin", policyBuilder =>
+                {
+                    policyBuilder
+                    .RequireAuthenticatedUser()
+                    .RequireClaim("Role", "Admin")
+                    .Build();
+                });
+
                 x.AddPolicy("Donator", policyBuilder =>
                 {
                     policyBuilder

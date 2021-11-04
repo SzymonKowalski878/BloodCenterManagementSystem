@@ -9,5 +9,6 @@ namespace BloodCenterManagementSystem.Logics.Interfaces
     {
         Result<ResultOfExaminationModel> AddResults(ResultOfExaminationModel examination);
         Result<ResultOfExaminationModel> UpdateResults(ResultOfExaminationModel examination);
+        Result<ResultOfExaminationModel> UpdateBloodExaminationResult(ResultOfExaminationModel examination);
     }
 }

@@ -3,6 +3,7 @@ using BloodCenterManagementSystem.Logics;
 using BloodCenterManagementSystem.Logics.Donations.DataHolders;
 using BloodCenterManagementSystem.Logics.Interfaces;
 using BloodCenterManagementSystem.Models;
+using BloodCenterManagementSystem.Web.Controllers.DataHolders;
 using BloodCenterManagementSystem.Web.DTO.Donation;
 using BloodCenterManagementSystem.Web.DTO.ResultOfExamination;
 using Microsoft.AspNetCore.Authorization;
@@ -34,7 +35,7 @@ namespace BloodCenterManagementSystem.Web.Controllers
       
         [HttpPost("{userId}")]
         [Authorize(Policy = "Worker")]
-        [ProducesResponseType(typeof(ReturnDonationDTO), 200)]
+        [ProducesResponseType(typeof(ReturnOk), 200)]
         [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
         public IActionResult AddDonation([FromRoute]int userId)
         {
@@ -52,7 +53,7 @@ namespace BloodCenterManagementSystem.Web.Controllers
                 return BadRequest("Error during mapping with automapper");
             }
 
-            return Ok(donationToReturn);
+            return Ok(new ReturnOk { Status = "ok" });
         }
 
 
@@ -142,7 +143,7 @@ namespace BloodCenterManagementSystem.Web.Controllers
 
         [HttpGet]
         [Authorize(Policy = "Worker")]
-        [ProducesResponseType(typeof(IEnumerable<ReturnDonationInQueueDTO>), 200)]
+        [ProducesResponseType(typeof(IEnumerable<ReturnAllDonationsDTO>), 200)]
         [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
         public IActionResult GetAllDonations()
         {
@@ -153,11 +154,11 @@ namespace BloodCenterManagementSystem.Web.Controllers
                 return BadRequest(result.ErrorMessages);
             }
 
-            var toReturn = new List<ReturnDonationInQueueDTO>();
+            var toReturn = new List<ReturnAllDonationsDTO>();
 
             foreach(var donation in result.Value)
             {
-                toReturn.Add(Mapper.Map<DonationModel, ReturnDonationInQueueDTO>(donation));
+                toReturn.Add(Mapper.Map<DonationModel, ReturnAllDonationsDTO>(donation));
             }
 
             return Ok(toReturn);
@@ -166,7 +167,7 @@ namespace BloodCenterManagementSystem.Web.Controllers
 
         [HttpPatch]
         [Authorize(Policy ="Worker")]
-        [ProducesResponseType(typeof(UpdateDonationStage), 200)]
+        [ProducesResponseType(typeof(ReturnOk), 200)]
         [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
         public IActionResult Patch (UpdateDonationStage data)
         {
@@ -177,7 +178,9 @@ namespace BloodCenterManagementSystem.Web.Controllers
                 return BadRequest(result.ErrorMessages);
             }
 
-            return Ok(data);
+            return Ok(new ReturnOk { Status = "ok" });
         }
+
+
     }
 }
