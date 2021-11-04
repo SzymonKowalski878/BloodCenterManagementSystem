@@ -16,6 +16,7 @@ namespace BloodCenterManagementSystem.Web.Mappers
             CreateMap<AddUserDTO, UserModel>();
             CreateMap<UserModel, ReturnUserInformationDTO>();
             CreateMap<AddWorkerDTO, UserModel>();
+            CreateMap<UserModel, ReturnUserShortDTO > ();
         }
     }
 }

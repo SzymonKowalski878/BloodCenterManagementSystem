@@ -16,6 +16,7 @@ namespace BloodCenterManagementSystem.Web.Mappers
             CreateMap<DonationModel, ReturnDonationInQueueDTO>();
             CreateMap<DonationModel, ReturnDonationSmallDTO>();
             CreateMap<DonationModel, ReturnDonationDetailsDTO>();
+            CreateMap<DonationModel, ReturnAllDonationsDTO>();
 
         }
     }

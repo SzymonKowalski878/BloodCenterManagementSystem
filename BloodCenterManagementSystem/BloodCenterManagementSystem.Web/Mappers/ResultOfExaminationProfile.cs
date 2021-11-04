@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BloodCenterManagementSystem.Models;
 using BloodCenterManagementSystem.Web.DTO.ResultOfExamination;
+using BloodCenterManagementSystem.Web.DTO.User;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,8 @@ namespace BloodCenterManagementSystem.Web.Mappers
             CreateMap<AddResultOfExaminationDTO, ResultOfExaminationModel>();
             CreateMap<UpdateResultOfExaminationDTO, ResultOfExaminationModel>();
             CreateMap<ResultOfExaminationModel, ResultOfExaminationWithoutDonatorDTO>();
+            CreateMap<FixResultOfBloodExminationDTO, ResultOfExaminationDTO>();
+            CreateMap<UserModel, ReturnWorkerAccountsDTO>();
         }
     }
 }

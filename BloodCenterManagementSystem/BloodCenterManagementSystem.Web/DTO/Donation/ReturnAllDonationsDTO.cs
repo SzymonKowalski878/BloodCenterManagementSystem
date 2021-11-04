@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace BloodCenterManagementSystem.Web.DTO.Donation
 {
-    public class ReturnDonationDTO
+    public class ReturnAllDonationsDTO
     {
         public int Id { get; set; }
-        public DateTime DonationDate { get; set; }
         public string Stage { get; set; }
+        public DateTime DonationDate { get; set; }
         public string RejectionReason { get; set; }
-        public ReturnDonatorInfoForDonationInfoDTO BloodDonator { get; set; }
+        public ReturnDonatorInQueueDTO BloodDonator { get; set; }
     }
 }

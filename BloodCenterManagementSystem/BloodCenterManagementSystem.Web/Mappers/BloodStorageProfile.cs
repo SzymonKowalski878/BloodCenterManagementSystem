@@ -12,7 +12,7 @@ namespace BloodCenterManagementSystem.Web.Mappers
     {
         public BloodStorageProfile()
         {
-            CreateMap<BloodStorageModel, ReturnAddedUnitDTO>();
+            CreateMap<BloodStorageModel, ReturnBloodUnitInStorage>();
         }
     }
 }
