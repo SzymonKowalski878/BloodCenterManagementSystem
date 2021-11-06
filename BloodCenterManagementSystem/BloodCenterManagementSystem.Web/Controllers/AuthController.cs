@@ -52,11 +52,34 @@ namespace BloodCenterManagementSystem.Web.Controllers
             return Ok(result.Value);
         }
 
+        private string GenerateLink(string route,string email, string token,string endpoint)
+        {
+            string link;
+
+            if (!string.IsNullOrEmpty(route))
+            {
+                link = route + "?userEmail=" + email + "&code" + token;
+                link = HttpUtility.UrlEncode(link);
+            }
+            else
+            {
+                //link = Url.Action(nameof(VerifyEmail), "Auth", new { userEmail = email, code = code.Value.Token }, Request.Scheme, Request.Host.ToString());
+                link = "http://localhost:4200/"+ endpoint + "?userEmail=" + email + "&code=" + token;
+            }
+
+            return link;
+        }
+
         [HttpPost("sendmail")]
         [ProducesResponseType(typeof(ReturnOk), 200)]
         [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
         public IActionResult SendMail([FromBody] SendMailHolder data)
         {
+            if (data == null)
+            {
+                return BadRequest("Data was null");
+            }
+
             if (data.Email == null)
             {
                 data.Email = "";
@@ -69,18 +92,7 @@ namespace BloodCenterManagementSystem.Web.Controllers
                 return BadRequest(code.ErrorMessages);
             }
 
-            string link;
-
-            if (!string.IsNullOrEmpty(data.Route))
-            {
-                link = data.Route + "?userEmail=" + data.Email + "&code" + code.Value.Token;
-                link = HttpUtility.UrlEncode(link);
-            }
-            else
-            {
-                //link = Url.Action(nameof(VerifyEmail), "Auth", new { userEmail = email, code = code.Value.Token }, Request.Scheme, Request.Host.ToString());
-                link = "http://localhost:4200/setpassword" + "?userEmail=" + data.Email + "&code=" + code.Value.Token;
-            }
+            var link = GenerateLink(data.Route, data.Email, code.Value.Token,"setpassword");
 
             var messageToSend = new MessageModel(new List<string> { data.Email }, "Blood bank email confirmation", link, null);
 
@@ -153,6 +165,75 @@ namespace BloodCenterManagementSystem.Web.Controllers
             if (!verificationResult.IsSuccessfull)
             {
                 return BadRequest(verificationResult.ErrorMessages);
+            }
+
+            return Ok(new ReturnOk { Status = "ok" });
+        }
+
+        [HttpPost("sendresetpasswordmail")]
+        [ProducesResponseType(typeof(ReturnOk), 200)]
+        [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
+        public IActionResult SendResetPasswordEmail([FromBody] SendMailHolder data)
+        {
+            if (data == null)
+            {
+                return BadRequest("Data was null");
+            }
+
+            if (data.Email == null)
+            {
+                data.Email = "";
+            }
+
+            var code = EmailConfirmationService.GenerateUserConfirmationToken(data.Email);
+
+            if (!code.IsSuccessfull)
+            {
+                return BadRequest(code.ErrorMessages);
+            }
+
+            var link = GenerateLink(data.Route, data.Email, code.Value.Token, "resetpassword");
+
+            var messageToSend = new MessageModel(new List<string> { data.Email }, "Blood bank password reset", link, null);
+
+            var result = EmailSender.SendEmail(messageToSend);
+
+            if (!result.IsSuccessfull)
+            {
+                return BadRequest(result.ErrorMessages);
+            }
+
+            return Ok(new ReturnOk { Status = "ok" });
+        }
+
+        [HttpPost("setnewpassword")]
+        [ProducesResponseType(typeof(ReturnOk), 200)]
+        [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
+        public IActionResult SetNewPassword([FromBody] VerifyEmailParams data)
+        {
+            if (data == null)
+            {
+                return BadRequest("Data was null");
+            }
+
+
+            if (data.UserEmail == null)
+            {
+                data.UserEmail = "";
+            }
+
+            var verificationResult = EmailConfirmationService.ValidateConfirmationToken(data.Code);
+
+            if (!verificationResult.IsSuccessfull)
+            {
+                return BadRequest(verificationResult.ErrorMessages);
+            }
+
+            var setPasswordResult = UserLogic.SetNewPassword(data.UserEmail, data.Code, data.Password);
+
+            if (!setPasswordResult.IsSuccessfull)
+            {
+                return BadRequest(setPasswordResult.ErrorMessages);
             }
 
             return Ok(new ReturnOk { Status = "ok" });

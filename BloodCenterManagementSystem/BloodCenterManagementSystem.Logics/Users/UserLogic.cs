@@ -245,5 +245,59 @@ namespace BloodCenterManagementSystem.Logics.Users
 
             return Result.Ok(user);
         }
+
+        public Result<string> SetNewPassword(string email,string authToken,string password)
+        {
+            var tokenEmail = ReadClaim(authToken, "email");
+            if (string.IsNullOrEmpty(tokenEmail) || email != tokenEmail)
+            {
+                return Result.Error<string>("Error during validation");
+            }
+
+            var user = UserRepository.GetByEmail(email);
+
+            if (user == null)
+            {
+                return Result.Error<string>("Error during validation");
+            }
+
+            if (!user.EmailConfirmed)
+            {
+                return Result.Error<string>("Email is not confirmed");
+            }
+
+            var passwordValidation = UserValidator.Validate(new UserModel
+            {
+                Password = password
+            },
+            options =>
+            {
+                options.IncludeRuleSets("ValidatePassword");
+            });
+
+            if (!passwordValidation.IsValid)
+            {
+                return Result.Error<string>("Error during password validationn");
+            }
+
+            var hashedPassword = AuthService.HashPassword(password);
+
+            if (string.IsNullOrEmpty(hashedPassword))
+            {
+                return Result.Error<string>("Error during email hashing");
+            }
+
+            try
+            {
+                user.Password = hashedPassword;
+                UserRepository.SaveChanges();
+            }
+            catch(Exception ex)
+            {
+                return Result.Error<string>(ex.Message);
+            }
+
+            return Result.Ok(email);
+        }
     }
 }
