@@ -15,5 +15,6 @@ namespace BloodCenterManagementSystem.Logics.Interfaces
         Result<UserModel> DeleteAccount(int id);
         Result<IEnumerable<UserModel>> ReturnAllWorkers();
         Result<UserModel> ReturnWorkerById(int id);
+        Result<string> SetNewPassword(string email, string authToken, string password);
     }
 }
