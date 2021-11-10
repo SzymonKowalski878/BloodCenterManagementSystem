@@ -56,7 +56,7 @@ namespace BloodCenterManagementSystem.Web.Controllers
             {
                 if (!string.IsNullOrEmpty(loggedInUserId) && loggedInUserId != id.ToString())
                 {
-                    return BadRequest(Result.Error<BloodDonatorModel>("Wypierdalaj").ErrorMessages);
+                    return BadRequest(Result.Error<BloodDonatorModel>("Id passed in route isn't equal to id in token").ErrorMessages);
                 }
             }
 

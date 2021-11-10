@@ -161,12 +161,28 @@ namespace BloodCenterManagementSystem.Web.Controllers
             return Ok(listToReturn);
         }
 
-        [Authorize(Policy = "Admin")]
+        [Authorize(Policy = "WorkerAdmin")]
         [HttpGet("{userid}")]
         [ProducesResponseType(typeof(ReturnWorkerAccountsDTO), 200)]
         [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
         public IActionResult ReturnWorkersAndAdmins([FromRoute]int userid)
         {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+
+            var loggedInUserId = identity.FindFirst("UserId")?.Value;
+            var loggedInUserRole = identity.FindFirst("Role")?.Value;
+
+            if (loggedInUserId != userid.ToString())
+            {
+                if (!string.IsNullOrEmpty(loggedInUserRole) && loggedInUserRole == "Worker")
+                {
+                    if (!string.IsNullOrEmpty(loggedInUserId) && loggedInUserId != userid.ToString())
+                    {
+                        return BadRequest(Result.Error<UserModel>("Id passed in route isn't equal to id in token").ErrorMessages);
+                    }
+                }
+            }
+
             var result = UserLogic.ReturnWorkerById(userid);
 
             if (!result.IsSuccessfull)
