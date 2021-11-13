@@ -7,7 +7,7 @@ namespace BloodCenterManagementSystem.Web.DTO.ResultOfExamination
 {
     public class FixResultOfBloodExminationDTO
     {
-        public int Id { get; set; }
+        public int DonationId { get; set; }
         public double HB { get; set; }
         public double HT { get; set; }
         public double RBC { get; set; }
