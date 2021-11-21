@@ -102,7 +102,7 @@ namespace BloodCenterManagementSystem.Web.Controllers
             {
                 if (!string.IsNullOrEmpty(loggedInUserId) && loggedInUserId != result.Value.BloodDonator.User.Id.ToString())
                 {
-                    return BadRequest(Result.Error<DonationModel>("Wypierdalaj").ErrorMessages);
+                    return BadRequest(Result.Error<DonationModel>("Trying to access someones data").ErrorMessages);
                 }
             }
 
@@ -132,7 +132,7 @@ namespace BloodCenterManagementSystem.Web.Controllers
             {
                 if (!string.IsNullOrEmpty(loggedInUserId) && loggedInUserId != result.Value.BloodDonator.User.Id.ToString())
                 {
-                    return BadRequest(Result.Error<DonationModel>("Wypierdalaj").ErrorMessages);
+                    return BadRequest(Result.Error<DonationModel>("Trying to access someones data").ErrorMessages);
                 }
             }
 

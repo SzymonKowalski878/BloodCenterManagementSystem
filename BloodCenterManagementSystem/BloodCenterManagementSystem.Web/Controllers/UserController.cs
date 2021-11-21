@@ -63,7 +63,7 @@ namespace BloodCenterManagementSystem.Web.Controllers
             {
                 if (!string.IsNullOrEmpty(loggedInUserId) && loggedInUserId != data.Id.ToString())
                 {
-                    return BadRequest(Result.Error<BloodDonatorModel>("Wypierdalaj").ErrorMessages);
+                    return BadRequest(Result.Error<BloodDonatorModel>("Trying to access someones data").ErrorMessages);
                 }
             }
 

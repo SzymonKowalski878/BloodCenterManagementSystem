@@ -126,7 +126,7 @@ namespace BloodCenterManagementSystem.Web.Controllers
             {
                 if (!string.IsNullOrEmpty(loggedInUserId) && loggedInUserId != userId.ToString())
                 {
-                    return BadRequest(Result.Error<IEnumerable<DonationModel>>("Wypierdalaj").ErrorMessages);
+                    return BadRequest(Result.Error<IEnumerable<DonationModel>>("Trying to access someones data").ErrorMessages);
                 }
             }
 
