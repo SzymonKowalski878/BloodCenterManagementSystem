@@ -11,6 +11,7 @@ namespace BloodCenterManagementSystem.Logics.Users.DataHolders
         public string Password { get; set; }
         public string HomeAdress { get; set; }
         public string PhoneNumber { get; set; }
+        public string Surname { get; set; }
 
     }
 }

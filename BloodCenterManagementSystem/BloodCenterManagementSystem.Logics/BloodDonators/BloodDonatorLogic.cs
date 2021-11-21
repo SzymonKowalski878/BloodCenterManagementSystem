@@ -132,7 +132,7 @@ namespace BloodCenterManagementSystem.Logics.BloodDonators
 
         public Result<BloodDonatorModel> UpdateUserData(UpdateUserData data)
         {
-            if (string.IsNullOrEmpty(data.Email) && string.IsNullOrEmpty(data.Password) && string.IsNullOrEmpty(data.HomeAdress) && string.IsNullOrEmpty(data.PhoneNumber))
+            if (string.IsNullOrEmpty(data.Email) && string.IsNullOrEmpty(data.Password) && string.IsNullOrEmpty(data.HomeAdress) && string.IsNullOrEmpty(data.PhoneNumber) && string.IsNullOrEmpty(data.Surname))
             {
                 return Result.Error<BloodDonatorModel>("All update properites were empty");
             }
@@ -163,7 +163,27 @@ namespace BloodCenterManagementSystem.Logics.BloodDonators
                 }
 
                 toUpdate.User.Email = user.Email;
-                BloodDonatorRepository.SaveChanges();
+            }
+
+            if (!string.IsNullOrEmpty(data.Surname))
+            {
+                var userToValidate = new UserModel
+                {
+                    FirstName = "correct",
+                    Surname = data.Surname
+                };
+
+                var validationResult = UserValidator.Validate(userToValidate, options =>
+                {
+                    options.IncludeRuleSets("ValidateNames");
+                });
+
+                if (!validationResult.IsValid)
+                {
+                    return Result.Error<BloodDonatorModel>(validationResult.Errors);
+                }
+
+                toUpdate.User.Surname = data.Surname;
             }
 
             if (!string.IsNullOrEmpty(data.Password))
@@ -185,16 +205,7 @@ namespace BloodCenterManagementSystem.Logics.BloodDonators
                     return Result.Error<BloodDonatorModel>("Error during password hashing");
                 }
 
-                try
-                {
-
-                    toUpdate.User.Password = hashedPassword;
-                    BloodDonatorRepository.SaveChanges();
-                }
-                catch(Exception ex)
-                {
-                    return Result.Error<BloodDonatorModel>(ex.Message);
-                }
+                toUpdate.User.Password = hashedPassword;
             }
 
             var donator = new BloodDonatorModel
@@ -215,15 +226,7 @@ namespace BloodCenterManagementSystem.Logics.BloodDonators
                     return Result.Error<BloodDonatorModel>(homeAdressValidation.Errors);
                 }
 
-                try
-                {
-                    toUpdate.HomeAdress = donator.HomeAdress;
-                    BloodDonatorRepository.SaveChanges();
-                }
-                catch(Exception ex)
-                {
-                    return Result.Error<BloodDonatorModel>(ex.Message);
-                }
+                toUpdate.HomeAdress = donator.HomeAdress;
             }
 
             if (!string.IsNullOrEmpty(data.PhoneNumber))
@@ -238,16 +241,16 @@ namespace BloodCenterManagementSystem.Logics.BloodDonators
                     return Result.Error<BloodDonatorModel>(phoneNumberValidation.Errors);
                 }
 
-                try
-                {
-                    toUpdate.PhoneNumber = donator.PhoneNumber;
-                    BloodDonatorRepository.SaveChanges();
-                }
-                catch(Exception ex)
-                {
-                    return Result.Error<BloodDonatorModel>(ex.Message);
-                }
+                toUpdate.PhoneNumber = donator.PhoneNumber;
+            }
 
+            try
+            {
+                BloodDonatorRepository.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                return Result.Error<BloodDonatorModel>(ex.Message);
             }
 
             return Result.Ok(toUpdate);
