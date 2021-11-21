@@ -44,38 +44,7 @@ namespace BloodCenterManagementSystem.Web.Controllers
             _emailConfirmationService = emailConfirmationService;
         }
 
-        [Authorize(Policy = "Authenticated")]
-        [HttpPatch]
-        [ProducesResponseType(typeof(ReturnOk), 200)]
-        [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
-        public IActionResult Patch(UpdateUserData data)
-        {
-            if (data == null)
-            {
-                return BadRequest("UpdateUserData was null");
-            }
-
-            var identity = HttpContext.User.Identity as ClaimsIdentity;
-
-            var loggedInUserId = identity.FindFirst("UserId")?.Value;
-            var loggedInUserRole = identity.FindFirst("Role")?.Value;
-            if (!string.IsNullOrEmpty(loggedInUserRole) && loggedInUserRole == "Donator")
-            {
-                if (!string.IsNullOrEmpty(loggedInUserId) && loggedInUserId != data.Id.ToString())
-                {
-                    return BadRequest(Result.Error<BloodDonatorModel>("Trying to access someones data").ErrorMessages);
-                }
-            }
-
-            var result = BloodDonatorLogic.UpdateUserData(data);
-
-            if (!result.IsSuccessfull)
-            {
-                return BadRequest(result.ErrorMessages);
-            }
-
-            return Ok(new ReturnOk { Status = "ok" });
-        }
+        
 
         [Authorize(Policy = "Admin")]
         [HttpPost("worker")]
@@ -193,6 +162,38 @@ namespace BloodCenterManagementSystem.Web.Controllers
             var toReturn = Mapper.Map<UserModel, ReturnWorkerAccountsDTO>(result.Value);
 
             return Ok(toReturn);
+        }
+
+
+        [Authorize(Policy = "WorkerAdmin")]
+        [HttpPatch]
+        [ProducesResponseType(typeof(ReturnOk), 200)]
+        [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
+        public IActionResult UpdateWorker(UpdateWorker data)
+        {
+            if (data == null)
+            {
+                return BadRequest("UpdateUserData was null");
+            }
+
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+
+            var loggedInUserId = identity.FindFirst("UserId")?.Value;
+            var loggedInUserRole = identity.FindFirst("Role")?.Value;
+
+            if (!string.IsNullOrEmpty(loggedInUserId) && loggedInUserId != data.Id.ToString())
+            {
+                return BadRequest(Result.Error<BloodDonatorModel>("Trying to access someones data").ErrorMessages);
+            }
+
+            var result = UserLogic.UpdateWoker(data);
+
+            if (!result.IsSuccessfull)
+            {
+                return BadRequest(result.ErrorMessages);
+            }
+
+            return Ok(new ReturnOk { Status = "ok" });
         }
     }
 }

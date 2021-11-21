@@ -137,18 +137,21 @@ namespace BloodCenterManagementSystem.Logics.BloodDonators
                 return Result.Error<BloodDonatorModel>("All update properites were empty");
             }
 
-            var user = new UserModel
-            {
-                Email = data?.Email,
-                Password = data?.Password
-            };
-
             var toUpdate = BloodDonatorRepository.ReturnDonatorInfo(data.Id);
 
             if (toUpdate == null)
             {
                 return Result.Error<BloodDonatorModel>("Unable to find user with id passed in the data");
             }
+
+            var user = new UserModel
+            {
+                Email = data?.Email,
+                Password = data?.Password,
+                FirstName = "tada",
+                Surname = data?.Surname
+
+            };
 
             if (!string.IsNullOrEmpty(data.Email))
             {
@@ -167,13 +170,7 @@ namespace BloodCenterManagementSystem.Logics.BloodDonators
 
             if (!string.IsNullOrEmpty(data.Surname))
             {
-                var userToValidate = new UserModel
-                {
-                    FirstName = "correct",
-                    Surname = data.Surname
-                };
-
-                var validationResult = UserValidator.Validate(userToValidate, options =>
+                var validationResult = UserValidator.Validate(user, options =>
                 {
                     options.IncludeRuleSets("ValidateNames");
                 });

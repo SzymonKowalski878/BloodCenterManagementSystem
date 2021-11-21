@@ -2,6 +2,7 @@
 using BloodCenterManagementSystem.Logics;
 using BloodCenterManagementSystem.Logics.Filters;
 using BloodCenterManagementSystem.Logics.Interfaces;
+using BloodCenterManagementSystem.Logics.Users.DataHolders;
 using BloodCenterManagementSystem.Models;
 using BloodCenterManagementSystem.Web.Controllers.DataHolders;
 using BloodCenterManagementSystem.Web.Controllers.Responses;
@@ -145,6 +146,39 @@ namespace BloodCenterManagementSystem.Web.Controllers
             }
 
             return Ok(list);
+        }
+
+        [Authorize(Policy = "Authenticated")]
+        [HttpPatch]
+        [ProducesResponseType(typeof(ReturnOk), 200)]
+        [ProducesResponseType(typeof(IEnumerable<ErrorMessage>), 400)]
+        public IActionResult Patch(UpdateUserData data)
+        {
+            if (data == null)
+            {
+                return BadRequest("UpdateUserData was null");
+            }
+
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+
+            var loggedInUserId = identity.FindFirst("UserId")?.Value;
+            var loggedInUserRole = identity.FindFirst("Role")?.Value;
+            if (loggedInUserRole == "Donator")
+            {
+                if (!string.IsNullOrEmpty(loggedInUserId) && loggedInUserId != data.Id.ToString())
+                {
+                    return BadRequest(Result.Error<BloodDonatorModel>("Trying to access someones data").ErrorMessages);
+                }
+            }
+
+            var result = BloodDonatorLogic.UpdateUserData(data);
+
+            if (!result.IsSuccessfull)
+            {
+                return BadRequest(result.ErrorMessages);
+            }
+
+            return Ok(new ReturnOk { Status = "ok" });
         }
     }
 }

@@ -299,5 +299,91 @@ namespace BloodCenterManagementSystem.Logics.Users
 
             return Result.Ok(email);
         }
+
+        public Result<UserModel> UpdateWoker(UpdateWorker data)
+        {
+            if (string.IsNullOrEmpty(data.Email) && string.IsNullOrEmpty(data.Password)  && string.IsNullOrEmpty(data.Surname))
+            {
+                return Result.Error<UserModel>("All update properites were empty");
+            }
+
+            var toUpdate = UserRepository.GetById(data.Id);
+
+            if (toUpdate == null)
+            {
+                return Result.Error<UserModel>("Unable to find user with id passed in the data");
+            }
+
+            var user = new UserModel
+            {
+                Email = data?.Email,
+                Password = data?.Password,
+                FirstName = "tada",
+                Surname = data?.Surname
+            };
+
+            if (!string.IsNullOrEmpty(data.Email))
+            {
+                var emailValidation = UserValidator.Validate(user, options =>
+                {
+                    options.IncludeRuleSets("ValidateEmail");
+                });
+
+                if (!emailValidation.IsValid)
+                {
+                    return Result.Error<UserModel>(emailValidation.Errors);
+                }
+
+                toUpdate.Email = user.Email;
+            }
+
+            if (!string.IsNullOrEmpty(data.Surname))
+            {
+                var validationResult = UserValidator.Validate(user, options =>
+                {
+                    options.IncludeRuleSets("ValidateNames");
+                });
+
+                if (!validationResult.IsValid)
+                {
+                    return Result.Error<UserModel>(validationResult.Errors);
+                }
+
+                toUpdate.Surname = data.Surname;
+            }
+
+            if (!string.IsNullOrEmpty(data.Password))
+            {
+                var passwordValidation = UserValidator.Validate(user, options =>
+                {
+                    options.IncludeRuleSets("ValidatePassword");
+                });
+
+                if (!passwordValidation.IsValid)
+                {
+                    return Result.Error<UserModel>(passwordValidation.Errors);
+                }
+
+                var hashedPassword = AuthService.HashPassword(user.Password);
+
+                if (String.IsNullOrEmpty(hashedPassword))
+                {
+                    return Result.Error<UserModel>("Error during password hashing");
+                }
+
+                toUpdate.Password = hashedPassword;
+            }
+
+            try
+            {
+                UserRepository.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                return Result.Error<UserModel>(ex.Message);
+            }
+
+            return Result.Ok(toUpdate);
+        }
     }
 }
