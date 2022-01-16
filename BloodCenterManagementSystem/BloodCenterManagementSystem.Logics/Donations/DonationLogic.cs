@@ -66,11 +66,6 @@ namespace BloodCenterManagementSystem.Logics.Donations
         {
             var donations = DonationRepository.ReturnDonatorsAllDonations(userId);
 
-            if (donations.Count() == 0)
-            {
-                return Result.Error<IEnumerable<DonationModel>>("There are no atempted donations by this user");
-            }
-
             return Result.Ok(donations);
         }
 
@@ -161,11 +156,6 @@ namespace BloodCenterManagementSystem.Logics.Donations
         public Result<IEnumerable<DonationModel>> ReturnAll()
         {
             var result = DonationRepository.GetAll();
-
-            if (result.Count() == 0)
-            {
-                return Result.Error<IEnumerable<DonationModel>>("No donations found");
-            }
 
             return Result.Ok(result);
         }
