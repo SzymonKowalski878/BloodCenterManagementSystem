@@ -16,12 +16,12 @@ namespace BloodCenterManagementSystem.Web.Autofac.Modules
 
             builder
                 .Register(context => new MapperConfiguration(cfg =>
-                 {
-                     foreach (var profile in context.Resolve<IEnumerable<Profile>>())
-                     {
-                         cfg.AddProfile(profile);
-                     }
-                 })).AsSelf().SingleInstance();
+                {
+                    foreach (var profile in context.Resolve<IEnumerable<Profile>>())
+                    {
+                        cfg.AddProfile(profile);
+                    }
+                })).AsSelf().SingleInstance();
         }
     }
 }

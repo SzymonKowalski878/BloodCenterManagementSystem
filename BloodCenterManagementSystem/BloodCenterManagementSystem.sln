@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30611.23
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BloodCenterManagementSystem.Web", "BloodCenterManagementSystem.Web\BloodCenterManagementSystem.Web.csproj", "{D1444242-9037-4182-946B-096C33D5F4B5}"
 EndProject
@@ -15,6 +15,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BloodCenterManagementSystem
 	ProjectSection(ProjectDependencies) = postProject
 		{D1444242-9037-4182-946B-096C33D5F4B5} = {D1444242-9037-4182-946B-096C33D5F4B5}
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BloodCenterManagmentSystem.Utilities", "BloodCenterManagmentSystem.Utilities\BloodCenterManagmentSystem.Utilities.csproj", "{74D366EE-DA5A-4F03-81AB-D9DEEBB70A87}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BloodCenterManagmentSystem.GraphQL.Types", "BloodCenterManagmentSystem.GraphQL.Types\BloodCenterManagmentSystem.GraphQL.Types.csproj", "{D278F840-AAD9-439A-B6FA-81EBC600C7E1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -42,6 +46,14 @@ Global
 		{433EAE5F-076A-4CA7-BA64-2D840F76D4A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{433EAE5F-076A-4CA7-BA64-2D840F76D4A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{433EAE5F-076A-4CA7-BA64-2D840F76D4A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{74D366EE-DA5A-4F03-81AB-D9DEEBB70A87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{74D366EE-DA5A-4F03-81AB-D9DEEBB70A87}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{74D366EE-DA5A-4F03-81AB-D9DEEBB70A87}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{74D366EE-DA5A-4F03-81AB-D9DEEBB70A87}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D278F840-AAD9-439A-B6FA-81EBC600C7E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D278F840-AAD9-439A-B6FA-81EBC600C7E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D278F840-AAD9-439A-B6FA-81EBC600C7E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D278F840-AAD9-439A-B6FA-81EBC600C7E1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

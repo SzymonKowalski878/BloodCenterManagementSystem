@@ -5,6 +5,17 @@ using System.Text;
 using System.Threading.Tasks;
 using Autofac;
 using AutoMapper;
+using BloodCenterManagementSystem.DataAccess;
+using BloodCenterManagementSystem.Logics.Repositories;
+using BloodCenterManagementSystem.Web.Queries;
+using BloodCenterManagementSystem.Web.Schema;
+using BloodCenterManagmentSystem.GraphQL.Types;
+using GraphiQl;
+using GraphQL;
+using GraphQL.Types;
+using HotChocolate;
+using HotChocolate.AspNetCore;
+using HotChocolate.AspNetCore.Playground;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -12,6 +23,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
@@ -25,6 +37,12 @@ namespace BloodCenterManagementSystem.Web
         {
             Configuration = configuration;
         }
+
+        public void ConfigureContainer(ContainerBuilder builder)
+        {
+            builder.RegisterAssemblyModules(typeof(Startup).Assembly);
+        }
+
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
@@ -66,7 +84,7 @@ namespace BloodCenterManagementSystem.Web
 
             services.AddAutoMapper(typeof(Startup));
 
-            services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
+            services.AddCors(o => o.AddDefaultPolicy(builder =>
             {
                 builder.AllowAnyOrigin()
                        .AllowAnyMethod()
@@ -140,11 +158,16 @@ namespace BloodCenterManagementSystem.Web
                     .Build();
                 });
             });
-        }
 
-        public void ConfigureContainer(ContainerBuilder builder)
-        {
-            builder.RegisterAssemblyModules(typeof(Startup).Assembly);
+            services.AddGraphQL(x => SchemaBuilder.New().AddServices(x)
+                .AddType<UserType>()
+                .AddQueryType<UserQuery>()
+                .AddMutationType<UserMutation>()
+                .Create());
+            /*services.AddScoped<IDependencyResolver>(s => new FuncDependencyResolver(
+                s.GetRequiredService));
+            services.AddScoped<ISchema, ProjectSchema>();*/
+
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -154,7 +177,7 @@ namespace BloodCenterManagementSystem.Web
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseCors("MyPolicy");
+            app.UseCors();
             app.UseRouting();
 
             app.UseAuthentication();
@@ -171,6 +194,13 @@ namespace BloodCenterManagementSystem.Web
                 options.SwaggerEndpoint("/swagger/v1/swagger.json", "BloodCenterManagementSystem");
             });
 
+            app.UsePlayground(new PlaygroundOptions
+            {
+                QueryPath = "/api",
+                Path = "/playground"
+            });
+
+            app.UseGraphQL("/api");
         }
     }
 }
